@@ -1,7 +1,6 @@
 package com.example.carparking.activity;
 
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -12,22 +11,20 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.carparking.R;
-import com.example.carparking.adapters.SearchResultAdapter;
 import com.example.carparking.fragments.MapsFragment;
 import com.example.carparking.fragments.SearchFragment;
 import com.example.carparking.model.SearchResult;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_map);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -58,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         SearchFragment searchFragment = new SearchFragment();
 
         searchFragment.setOnSearchItemSelectedCallback(searchResult -> {
-            Toast.makeText(HomeActivity.this,
+            Toast.makeText(MapActivity.this,
                     "Selected: " + searchResult.getTitle(),
                     Toast.LENGTH_SHORT).show();
 

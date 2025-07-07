@@ -22,7 +22,7 @@
             android:value="AIzaSyABN_OqsglqzFk-Ci-cI-WtaUwE7apWD4g" />
 
         <activity
-            android:name=".activity.HomeActivity"
+            android:name=".activity.MapActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
