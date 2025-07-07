@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">CarParking</string>
 
+    <!-- General Strings -->
+    <string name="loading">Đang tải...</string>
+    <string name="permission_denied">Bạn đã từ chối quyền truy cập</string>
+    <string name="show_location_permission_message">Vui lòng cấp quyền truy cập vị trí để xem vị trí của bạn</string>
+
     <!-- Home Strings -->
-    <string name="home_title">Đặt xe</string>
+    <string name="home_title">Bãi đỗ</string>
 
     <!-- Booking History Strings -->
     <string name="history_title">Lịch sử</string>
@@ -26,6 +31,12 @@
     <string name="address_1">Địa chỉ 1</string>
     <string name="price">200.000 VND</string>
     <string name="view_details">Xem chi tiết</string>
+
+    <!-- Search Strings -->
+    <string name="search_hint">Tìm kiếm địa chỉ hoặc bãi đỗ xe</string>
+    <string name="search_result_icon">Biểu tượng kết quả tìm kiếm</string>
+    <string name="sample_title">Tiêu đề mẫu</string>
+    <string name="sample_subtitle">Phụ đề mẫu</string>
 
     <!-- Content Descriptions -->
     <string name="back_button">Quay lại</string>
