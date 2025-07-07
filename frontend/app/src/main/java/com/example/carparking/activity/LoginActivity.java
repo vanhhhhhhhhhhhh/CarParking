@@ -15,6 +15,7 @@ import com.example.carparking.api.ApiClient;
 import com.example.carparking.api.ApiService;
 import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.model.User;
+import com.example.carparking.util.SharedPrefManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,17 +52,28 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<ResponseWrapper<User>> call, Response<ResponseWrapper<User>> response) {
                     if (response.isSuccessful() && response.body().success) {
+                        String token = response.body().accessToken;
+
+                        User loggedInUser = response.body().user; // Lấy từ field user
+                        if (loggedInUser != null) {
+                            String fullName = loggedInUser.fullName;
+                            SharedPrefManager.getInstance(LoginActivity.this).saveFullName(fullName);
+                        }
+
+                        SharedPrefManager.getInstance(LoginActivity.this).saveToken(token);
+
                         Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                     }
                 }
 
+
                 @Override
                 public void onFailure(Call<ResponseWrapper<User>> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         });

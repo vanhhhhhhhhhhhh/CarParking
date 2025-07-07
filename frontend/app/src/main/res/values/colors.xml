@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
+    <color name="purple_700">#9C27B0</color>
     <!-- Primary Colors -->
     <color name="primary_blue">#0077FF</color>
     <color name="primary_purple">#6750A4</color>
