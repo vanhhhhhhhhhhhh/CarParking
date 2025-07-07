@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 require('dotenv').config()
+const apiUser = require('./router/apiUser')
 
 
 
@@ -22,6 +23,9 @@ mongoose.connect(`${mongoURL}${dbName}`, {
     .catch((err) => console.error('MongoDB connection error:', err));
 
 app.use(cors());
+
+// AUTHENTICATION
+app.use('/auth', apiUser)
 
 app.listen(port, () => {
     console.log(`Server is running on http://${hostname}:${port}`);

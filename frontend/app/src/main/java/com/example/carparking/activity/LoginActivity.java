@@ -1,0 +1,71 @@
+package com.example.carparking.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.carparking.MainActivity;
+import com.example.carparking.R;
+import com.example.carparking.api.ApiClient;
+import com.example.carparking.api.ApiService;
+import com.example.carparking.model.ResponseWrapper;
+import com.example.carparking.model.User;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class LoginActivity extends AppCompatActivity {
+
+    EditText etPhone, etPassword;
+    Button btnLogin;
+    TextView tvRegister;
+    ApiService api;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        etPhone = findViewById(R.id.etPhone);
+        etPassword = findViewById(R.id.etPassword);
+        btnLogin = findViewById(R.id.btnLogin);
+        tvRegister = findViewById(R.id.tvRegister);
+
+        api = ApiClient.getClient().create(ApiService.class);
+
+        btnLogin.setOnClickListener(v -> {
+            String phone = etPhone.getText().toString().trim();
+            String password = etPassword.getText().toString().trim();
+
+            User user = new User();
+            user.phone = phone;
+            user.password = password;
+
+            api.login(user).enqueue(new Callback<ResponseWrapper<User>>() {
+                @Override
+                public void onResponse(Call<ResponseWrapper<User>> call, Response<ResponseWrapper<User>> response) {
+                    if (response.isSuccessful() && response.body().success) {
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseWrapper<User>> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        tvRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
+    }
+}
