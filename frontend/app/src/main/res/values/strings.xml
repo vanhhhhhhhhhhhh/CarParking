@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">CarParking</string>
+    <string name="navigation_drawer_open">Mở menu</string>
+    <string name="navigation_drawer_close">Đóng menu</string>
 
     <!-- General Strings -->
     <string name="loading">Đang tải...</string>
