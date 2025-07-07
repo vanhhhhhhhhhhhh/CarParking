@@ -1,29 +1,32 @@
 <resources>
     <string name="app_name">CarParking</string>
-    
+
+    <!-- Home Strings -->
+    <string name="home_title">Đặt xe</string>
+
     <!-- Booking History Strings -->
     <string name="history_title">Lịch sử</string>
     <string name="start_date_label">Ngày bắt đầu</string>
     <string name="end_date_label">Ngày kết thúc</string>
     <string name="date_placeholder">mm/dd/yyyy</string>
-    
+
     <!-- Time Period Filters -->
     <string name="last_7_days">7 ngày qua</string>
     <string name="last_1_month">1 tháng qua</string>
     <string name="last_6_months">6 tháng qua</string>
     <string name="last_1_year">1 năm qua</string>
-    
+
     <!-- Booking Status -->
     <string name="status_completed">Đã hoàn thành</string>
     <string name="status_pending">Đang chờ xác nhận</string>
     <string name="status_cancelled">Đã hủy</string>
-    
+
     <!-- Booking Item -->
     <string name="time_slot">6:00 - 12:00</string>
     <string name="address_1">Địa chỉ 1</string>
     <string name="price">200.000 VND</string>
     <string name="view_details">Xem chi tiết</string>
-    
+
     <!-- Content Descriptions -->
     <string name="back_button">Quay lại</string>
     <string name="location_icon">Vị trí</string>

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_gray">
+    >
 
     <LinearLayout
         android:id="@+id/layoutDateFilter"
@@ -74,6 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:chipSpacing="8dp"
+            app:singleSelection="true"
             app:singleLine="true">
 
             <com.google.android.material.chip.Chip
@@ -86,7 +87,6 @@
                 android:textColor="@color/text_selected_chip"
                 android:textSize="14sp"
                 android:layout_marginStart="17dp"
-                app:chipBackgroundColor="@color/selected_chip_background"
                  />
 
             <com.google.android.material.chip.Chip
@@ -97,7 +97,6 @@
                 android:text="@string/last_1_month"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
-                app:chipBackgroundColor="@android:color/transparent"
                 />
 
             <com.google.android.material.chip.Chip
@@ -108,7 +107,6 @@
                 android:text="@string/last_6_months"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
-                app:chipBackgroundColor="@android:color/transparent"
                 />
 
             <com.google.android.material.chip.Chip
@@ -119,7 +117,6 @@
                 android:text="@string/last_1_year"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
-                app:chipBackgroundColor="@android:color/transparent"
                 android:layout_marginEnd="17dp"
                  />
 

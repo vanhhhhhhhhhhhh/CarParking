@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,14 +22,9 @@ import com.google.android.material.chip.ChipGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookingHistoryActivity extends AppCompatActivity {
+public class BookingHistoryActivity extends AppCompatActivity implements ChipGroup.OnCheckedStateChangeListener {
 
     private ChipGroup chipGroupFilters;
-    private Chip chipLast7Days;
-    private Chip chipLast1Month;
-    private Chip chipLast6Months;
-    private Chip chipLast1Year;
-    
     private RecyclerView recyclerViewBookings;
     private BookingAdapter bookingAdapter;
     private List<BookingDemo> bookingList;
@@ -52,18 +48,14 @@ public class BookingHistoryActivity extends AppCompatActivity {
 
         initViews();
         setupRecyclerView();
-        setupClickListeners();
         loadSampleData();
     }
 
     private void initViews() {
         chipGroupFilters = findViewById(R.id.chipGroupFilters);
-        chipLast7Days = findViewById(R.id.chipLast7Days);
-        chipLast1Month = findViewById(R.id.chipLast1Month);
-        chipLast6Months = findViewById(R.id.chipLast6Months);
-        chipLast1Year = findViewById(R.id.chipLast1Year);
-        
         recyclerViewBookings = findViewById(R.id.recyclerViewBookings);
+
+        chipGroupFilters.setOnCheckedStateChangeListener(this);
     }
 
     private void setupRecyclerView() {
@@ -75,24 +67,6 @@ public class BookingHistoryActivity extends AppCompatActivity {
         
         bookingAdapter.setOnBookingClickListener(booking -> {
             Toast.makeText(this, "Viewing details for: " + booking.getAddress(), Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void setupClickListeners() {
-        chipLast7Days.setOnClickListener(v -> {
-            filterBookings("7_days");
-        });
-        
-        chipLast1Month.setOnClickListener(v -> {
-            filterBookings("1_month");
-        });
-        
-        chipLast6Months.setOnClickListener(v -> {
-            filterBookings("6_months");
-        });
-        
-        chipLast1Year.setOnClickListener(v -> {
-            filterBookings("1_year");
         });
     }
 
@@ -109,30 +83,16 @@ public class BookingHistoryActivity extends AppCompatActivity {
         bookingAdapter.notifyDataSetChanged();
     }
 
-    private void filterBookings(String period) {
-        resetChipSelection();
-        
-        switch (period) {
-            case "7_days":
-                chipLast7Days.setChecked(true);
-                break;
-            case "1_month":
-                chipLast1Month.setChecked(true);
-                break;
-            case "6_months":
-                chipLast6Months.setChecked(true);
-                break;
-            case "1_year":
-                chipLast1Year.setChecked(true);
-                break;
+    private void filterBookings(int checkedChipId) {
+        if (checkedChipId == R.id.chipLast7Days) {
+            Toast.makeText(this, "Filtering bookings for the last 7 days", Toast.LENGTH_SHORT).show();
+        } else if (checkedChipId == R.id.chipLast1Month) {
+            Toast.makeText(this, "Filtering bookings for the last 1 month", Toast.LENGTH_SHORT).show();
+        } else if (checkedChipId == R.id.chipLast6Months) {
+            Toast.makeText(this, "Filtering bookings for the last 6 months", Toast.LENGTH_SHORT).show();
+        } else if (checkedChipId == R.id.chipLast1Year) {
+            Toast.makeText(this, "Filtering bookings for the last 1 year", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void resetChipSelection() {
-        chipLast7Days.setChecked(false);
-        chipLast1Month.setChecked(false);
-        chipLast6Months.setChecked(false);
-        chipLast1Year.setChecked(false);
     }
 
     @Override
@@ -140,4 +100,9 @@ public class BookingHistoryActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-} 
+
+    @Override
+    public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
+        filterBookings(group.getCheckedChipId());
+    }
+}
