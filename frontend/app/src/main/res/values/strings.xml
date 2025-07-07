@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">CarParking</string>
+    <string name="navigation_drawer_open">Mở menu</string>
+    <string name="navigation_drawer_close">Đóng menu</string>
 
-    <!-- Home Strings -->
-    <string name="home_title">Đặt xe</string>
 
     <!-- Booking History Strings -->
     <string name="history_title">Lịch sử</string>

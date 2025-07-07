@@ -15,15 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarParking"
         tools:targetApi="31">
+
+        <!-- HOME -->
         <activity
             android:name=".activity.HomeActivity"
+            android:theme="@style/Theme.CarParking.NoActionBar"
             android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
+
+        <!-- AUTHENTICATION -->
         <activity
             android:name=".activity.RegisterActivity"
             android:exported="false"
@@ -32,6 +37,12 @@
             android:name=".activity.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.CarParking.NoActionBar">
+        </activity>
+
+
+        <activity
+            android:name=".activity.BookingHistoryActivity"
+            android:exported="true">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -39,15 +50,6 @@
 
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
-        </activity>
-        <activity
-            android:name=".activity.BookingHistoryActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
