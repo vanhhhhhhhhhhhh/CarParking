@@ -9,7 +9,8 @@
     <string name="show_location_permission_message">Vui lòng cấp quyền truy cập vị trí để xem vị trí của bạn</string>
 
     <!-- Home Strings -->
-    <string name="home_title">Bãi đỗ</string>
+    <string name="parking_title">Bãi đỗ</string>
+    <string name="home_title">Car Parking</string>
 
     <!-- Booking History Strings -->
     <string name="history_title">Lịch sử</string>
@@ -46,4 +47,5 @@
     <string name="time_icon">Thời gian</string>
     <string name="money_icon">Tiền</string>
     <string name="status_icon">Trạng thái</string>
+    <string name="date_range_label">Chọn khoảng ngày</string>
 </resources>

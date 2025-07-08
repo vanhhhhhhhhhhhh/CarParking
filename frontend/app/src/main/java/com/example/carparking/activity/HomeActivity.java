@@ -7,10 +7,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.carparking.R;
@@ -21,32 +26,39 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    Toolbar toolbar;
-
     LinearLayout btnMap, btnHistory, btnOwner, btnSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.navigation_view), (v, insets) -> {;
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
-        toolbar = findViewById(R.id.toolbar);
 
         btnMap = findViewById(R.id.btnMap);
         btnHistory = findViewById(R.id.btnHistory);
         btnOwner = findViewById(R.id.btnOwner);
         btnSettings = findViewById(R.id.btnSettings);
 
-        setSupportActionBar(toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-        );
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        ActionBar appBar = getSupportActionBar();
+
+        if (appBar != null) {
+            appBar.setDisplayHomeAsUpEnabled(true);
+            appBar.setTitle(R.string.home_title);
+            appBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
 
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             navigationView.getMenu().clear();
@@ -70,6 +82,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         btnHistory.setOnClickListener(v -> startActivity(new Intent(this, BookingHistoryActivity.class)));
         btnOwner.setOnClickListener(v -> startActivity(new Intent(this, CreateParkingActivity.class)));
         btnSettings.setOnClickListener(v -> Toast.makeText(this, "Cài đặt", Toast.LENGTH_SHORT).show());
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (drawerLayout.isDrawerOpen(navigationView)) {
+            drawerLayout.closeDrawer(navigationView);
+        } else {
+            drawerLayout.openDrawer(navigationView);
+        }
+        return true;
     }
 
     @Override

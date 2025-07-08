@@ -34,8 +34,7 @@ public class MapActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(R.string.home_title);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setTitle(R.string.parking_title);
         }
 
         setupSearchFragment();
@@ -90,6 +89,15 @@ public class MapActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+
+
 
     private void openParkingDetails(SearchResult result) {
     }

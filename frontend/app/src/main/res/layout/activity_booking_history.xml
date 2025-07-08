@@ -7,56 +7,16 @@
     android:layout_height="match_parent"
     >
 
-    <LinearLayout
-        android:id="@+id/layoutDateFilter"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/dateRangeFragmentContainer"
+        android:name="com.example.carparking.fragment.DateRangeFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:paddingHorizontal="17dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etStartDate"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/start_date_label">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etStartDateEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:inputType="none" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/etEndDate"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:hint="@string/end_date_label">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEndDateEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:inputType="none" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <HorizontalScrollView
         android:id="@+id/scrollViewChips"
@@ -67,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutDateFilter">
+        app:layout_constraintTop_toBottomOf="@id/dateRangeFragmentContainer">
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupFilters"
@@ -137,4 +97,4 @@
         app:layout_constraintTop_toBottomOf="@id/scrollViewChips"
         tools:listitem="@layout/item_booking" />
 
-</androidx.constraintlayout.widget.ConstraintLayout> 
+</androidx.constraintlayout.widget.ConstraintLayout>

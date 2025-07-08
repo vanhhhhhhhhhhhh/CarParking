@@ -1,6 +1,7 @@
 package com.example.carparking.activity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,20 +16,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
 import com.example.carparking.adapters.BookingAdapter;
+import com.example.carparking.fragment.DateRangeFragment;
 import com.example.carparking.model.BookingDemo;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class BookingHistoryActivity extends AppCompatActivity implements ChipGroup.OnCheckedStateChangeListener {
+public class BookingHistoryActivity extends AppCompatActivity
+        implements ChipGroup.OnCheckedStateChangeListener, DateRangeFragment.OnDateRangeSelectedListener {
 
     private ChipGroup chipGroupFilters;
     private RecyclerView recyclerViewBookings;
     private BookingAdapter bookingAdapter;
     private List<BookingDemo> bookingList;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,20 +55,29 @@ public class BookingHistoryActivity extends AppCompatActivity implements ChipGro
         loadSampleData();
     }
 
+    @Override
+    public void onDateRangeSelected(Date startDate, Date endDate) {
+        Toast.makeText(this, "Date range selected: " + startDate + " to " + endDate, Toast.LENGTH_SHORT).show();
+    }
+
+
     private void initViews() {
         chipGroupFilters = findViewById(R.id.chipGroupFilters);
         recyclerViewBookings = findViewById(R.id.recyclerViewBookings);
 
         chipGroupFilters.setOnCheckedStateChangeListener(this);
+
+        DateRangeFragment dateRangeFragment = (DateRangeFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.dateRangeFragmentContainer);
     }
 
     private void setupRecyclerView() {
         bookingList = new ArrayList<>();
         bookingAdapter = new BookingAdapter(this, bookingList);
-        
+
         recyclerViewBookings.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewBookings.setAdapter(bookingAdapter);
-        
+
         bookingAdapter.setOnBookingClickListener(booking -> {
             Toast.makeText(this, "Viewing details for: " + booking.getAddress(), Toast.LENGTH_SHORT).show();
         });
@@ -72,14 +85,14 @@ public class BookingHistoryActivity extends AppCompatActivity implements ChipGro
 
     private void loadSampleData() {
         bookingList.clear();
-        
+
         bookingList.add(new BookingDemo("1", "Địa chỉ 1", "6:00 - 12:00", "200.000 VND", BookingDemo.Status.COMPLETED));
         bookingList.add(new BookingDemo("2", "Vincom Center", "14:00 - 18:00", "150.000 VND", BookingDemo.Status.PENDING));
         bookingList.add(new BookingDemo("3", "Lotte Center", "8:00 - 17:00", "300.000 VND", BookingDemo.Status.CONFIRMED));
         bookingList.add(new BookingDemo("4", "Times City", "10:00 - 15:00", "180.000 VND", BookingDemo.Status.CANCELLED));
         bookingList.add(new BookingDemo("5", "Royal City", "9:00 - 16:00", "250.000 VND", BookingDemo.Status.COMPLETED));
         bookingList.add(new BookingDemo("6", "Indochina Plaza", "7:00 - 19:00", "400.000 VND", BookingDemo.Status.CONFIRMED));
-        
+
         bookingAdapter.notifyDataSetChanged();
     }
 
