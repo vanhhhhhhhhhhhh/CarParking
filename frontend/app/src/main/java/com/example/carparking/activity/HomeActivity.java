@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             tvHeader.setText("Xin chào khách");
         }
 
-        btnMap.setOnClickListener(v -> Toast.makeText(this, "Đi tới bản đồ", Toast.LENGTH_SHORT).show());
+        btnMap.setOnClickListener(v -> startActivity(new Intent(this, MapActivity.class)));
         btnHistory.setOnClickListener(v -> startActivity(new Intent(this, BookingHistoryActivity.class)));
         btnOwner.setOnClickListener(v -> startActivity(new Intent(this, CreateParkingActivity.class)));
         btnSettings.setOnClickListener(v -> Toast.makeText(this, "Cài đặt", Toast.LENGTH_SHORT).show());
