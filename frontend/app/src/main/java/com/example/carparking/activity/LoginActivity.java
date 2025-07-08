@@ -9,10 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.carparking.MainActivity;
 import com.example.carparking.R;
 import com.example.carparking.api.ApiClient;
-import com.example.carparking.api.ApiService;
+import com.example.carparking.api.AuthApiService;
 import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.model.User;
 import com.example.carparking.util.SharedPrefManager;
@@ -26,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText etPhone, etPassword;
     Button btnLogin;
     TextView tvRegister;
-    ApiService api;
+    AuthApiService api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         tvRegister = findViewById(R.id.tvRegister);
 
-        api = ApiClient.getClient().create(ApiService.class);
+        api = ApiClient.getClient(null).create(AuthApiService.class);
 
         btnLogin.setOnClickListener(v -> {
             String phone = etPhone.getText().toString().trim();
@@ -54,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.isSuccessful() && response.body().success) {
                         String token = response.body().accessToken;
 
-                        User loggedInUser = response.body().user; // Lấy từ field user
+                        User loggedInUser = response.body().user;
                         if (loggedInUser != null) {
                             String fullName = loggedInUser.fullName;
                             SharedPrefManager.getInstance(LoginActivity.this).saveFullName(fullName);

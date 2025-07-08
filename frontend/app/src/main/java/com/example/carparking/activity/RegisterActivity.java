@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carparking.R;
 import com.example.carparking.api.ApiClient;
-import com.example.carparking.api.ApiService;
+import com.example.carparking.api.AuthApiService;
 import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.model.User;
 
@@ -23,7 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText etFullName, etPhone, etPassword, etConfirmPassword;
     Button btnRegister;
     TextView tvBackToLogin;
-    ApiService api;
+    AuthApiService api;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +37,10 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         tvBackToLogin = findViewById(R.id.tvBackToLogin);
 
-        api = ApiClient.getClient().create(ApiService.class);
+        api = ApiClient.getClient(null).create(AuthApiService.class);
 
         tvBackToLogin.setOnClickListener(v -> {
-            finish(); // kết thúc RegisterActivity để quay về LoginActivity
+            finish();
         });
 
         btnRegister.setOnClickListener(v -> {

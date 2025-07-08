@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_card"
+        android:padding="20dp"
+        android:elevation="6dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:text="Tạo bãi đỗ xe mới"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#1E88E5"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etName"
+            android:hint="Tên bãi đỗ"
+            android:background="@drawable/bg_edittext"
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etAddress"
+            android:hint="Địa chỉ"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_edittext"
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/etLatitude"
+                android:hint="Vĩ độ"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/bg_edittext"
+                android:padding="12dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/etLongitude"
+                android:hint="Kinh độ"
+                android:inputType="numberDecimal"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/bg_edittext"
+                android:padding="12dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etTotalSlots"
+            android:hint="Tổng số chỗ"
+            android:inputType="number"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_edittext"
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etAvailableSlots"
+            android:hint="Số chỗ trống"
+            android:inputType="number"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_edittext"
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etPricePerHour"
+            android:hint="Giá mỗi giờ (VND)"
+            android:inputType="number"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_edittext"
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/etOpenTime"
+                android:hint="Mở cửa (HH:mm)"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/bg_edittext"
+                android:padding="12dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:id="@+id/etCloseTime"
+                android:hint="Đóng cửa (HH:mm)"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/bg_edittext"
+                android:padding="12dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSelectImage"
+            android:text="Chọn ảnh bãi đỗ"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#03A9F4"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:background="#BDBDBD" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:text="Gửi yêu cầu tạo bãi đỗ"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnBackHome"
+            android:text="Quay về trang chủ"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#9E9E9E"
+            android:textColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>

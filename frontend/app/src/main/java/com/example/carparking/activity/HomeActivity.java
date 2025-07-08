@@ -1,9 +1,9 @@
 package com.example.carparking.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +15,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.carparking.R;
 import com.example.carparking.util.SharedPrefManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -23,21 +22,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    BottomNavigationView bottomNav;
 
-    @SuppressLint("SetTextI18n")
+    LinearLayout btnMap, btnHistory, btnOwner, btnSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Ánh xạ view
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.toolbar);
-        bottomNav = findViewById(R.id.bottomNavigationView);
 
-        // Toolbar setup
+        btnMap = findViewById(R.id.btnMap);
+        btnHistory = findViewById(R.id.btnHistory);
+        btnOwner = findViewById(R.id.btnOwner);
+        btnSettings = findViewById(R.id.btnSettings);
+
         setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar,
@@ -47,43 +48,45 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Navigation drawer
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.drawer_menu_logged_in);
+        } else {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.drawer_menu_logged_out);
+        }
+
         navigationView.setNavigationItemSelectedListener(this);
+
         TextView tvHeader = navigationView.getHeaderView(0).findViewById(R.id.tvHeader);
-        String name = SharedPrefManager.getInstance(this).getFullName();
-        tvHeader.setText("Xin chào, " + name);
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+            String name = SharedPrefManager.getInstance(this).getFullName();
+            tvHeader.setText("Xin chào " + name);
+        } else {
+            tvHeader.setText("Xin chào khách");
+        }
 
-        // Bottom navigation xử lý click
-        bottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.nav_map) {
-                Toast.makeText(this, "Đi tới bản đồ", Toast.LENGTH_SHORT).show();
-                return true;
-            } else if (itemId == R.id.nav_history) {
-                startActivity(new Intent(this, BookingHistoryActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_owner) {
-                Toast.makeText(this, "Đăng ký làm chủ bãi", Toast.LENGTH_SHORT).show();
-                return true;
-            } else if (itemId == R.id.nav_settings) {
-                Toast.makeText(this, "Cài đặt", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-            return false;
-        });
-
+        btnMap.setOnClickListener(v -> Toast.makeText(this, "Đi tới bản đồ", Toast.LENGTH_SHORT).show());
+        btnHistory.setOnClickListener(v -> startActivity(new Intent(this, BookingHistoryActivity.class)));
+        btnOwner.setOnClickListener(v -> startActivity(new Intent(this, CreateParkingActivity.class)));
+        btnSettings.setOnClickListener(v -> Toast.makeText(this, "Cài đặt", Toast.LENGTH_SHORT).show());
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.nav_profile) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_profile) {
             Toast.makeText(this, "Hồ sơ cá nhân", Toast.LENGTH_SHORT).show();
-        } else if (item.getItemId() == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             SharedPrefManager.getInstance(this).clear();
+            Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
+        } else if (id == R.id.nav_login) {
+            startActivity(new Intent(this, LoginActivity.class));
         }
+
         drawerLayout.closeDrawers();
         return true;
     }

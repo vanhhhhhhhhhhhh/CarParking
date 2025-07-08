@@ -35,10 +35,15 @@ const parkingSchema = mongoose.Schema({
     imageUrl: {
         type: String
     },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending'
+    },
     ownerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'users'
     }
-}, { timestamps })
+}, { timestamps: true })
 
 module.exports = mongoose.model('parkings', parkingSchema)

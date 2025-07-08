@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 require('dotenv').config()
 const apiUser = require('./router/apiUser')
+const apiParking = require('./router/apiParking')
 
 
 
@@ -26,6 +27,10 @@ app.use(cors());
 
 // AUTHENTICATION
 app.use('/auth', apiUser)
+
+// PARKING
+app.use('/parking', apiParking)
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://${hostname}:${port}`);

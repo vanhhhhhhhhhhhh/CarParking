@@ -7,11 +7,11 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public interface ApiService {
-    @POST("register")
+public interface AuthApiService {
+
+    @POST("auth/register")
     Call<ResponseWrapper<Void>> register(@Body User user);
 
-    @POST("login")
+    @POST("auth/login")
     Call<ResponseWrapper<User>> login(@Body User user);
 }
-
