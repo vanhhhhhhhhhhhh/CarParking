@@ -36,12 +36,8 @@ public class TimeRangeFragment extends Fragment {
     private Date selectedEndTime;
     private OnTimeRangeSelectedListener timeRangeListener;
     
-    private Calendar startCalendar = Calendar.getInstance();
-    private Calendar endCalendar = Calendar.getInstance();
-
-    public static TimeRangeFragment newInstance() {
-        return new TimeRangeFragment();
-    }
+    private final Calendar startCalendar = Calendar.getInstance();
+    private final Calendar endCalendar = Calendar.getInstance();
 
     @Override
     public void onAttach(@NonNull Context context) {

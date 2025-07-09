@@ -11,14 +11,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.carparking.R;
+import com.example.carparking.dialogs.AddLicensePlateDialog;
 import com.example.carparking.fragments.BookingFragment;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BookingActivity extends AppCompatActivity implements BookingFragment.OnBookingActionListener {
+public class BookingActivity extends AppCompatActivity implements BookingFragment.OnBookingActionListener, AddLicensePlateDialog.OnLicensePlateAddedListener {
 
     private BookingFragment bookingFragment;
+    private List<String> licensePlates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,26 @@ public class BookingActivity extends AppCompatActivity implements BookingFragmen
 
     @Override
     public void onAddNewLicensePlateClicked() {
+        AddLicensePlateDialog dialog = new AddLicensePlateDialog();
+        dialog.setOnLicensePlateAddedListener(this);
+        dialog.show(getSupportFragmentManager(), "AddLicensePlateDialog");
+    }
 
+    @Override
+    public void onLicensePlateAdded(String licensePlate) {
+        if (licensePlates == null) {
+            licensePlates = new ArrayList<>();
+        }
+
+        if (!licensePlates.contains(licensePlate)) {
+            licensePlates.add(licensePlate);
+            if (bookingFragment != null) {
+                bookingFragment.setLicensePlates(licensePlates);
+            }
+            Log.d("BookingActivity", "Added new license plate: " + licensePlate);
+        } else {
+            Log.d("BookingActivity", "License plate already exists: " + licensePlate);
+        }
     }
 
     @Override

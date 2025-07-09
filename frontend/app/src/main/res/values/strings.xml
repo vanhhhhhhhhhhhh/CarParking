@@ -75,4 +75,8 @@
     <string name="start_time_label">Giờ bắt đầu</string>
     <string name="end_time_label">Giờ kết thúc</string>
     <string name="time_placeholder">HH:mm - mm/dd/yyyy</string>
+    <string name="add_new_license_plate_title">Thêm biển</string>
+    <string name="enter_license_plate_number">Nhập biển số</string>
+    <string name="cancel">Hủy</string>
+    <string name="add">Thêm</string>
 </resources>
