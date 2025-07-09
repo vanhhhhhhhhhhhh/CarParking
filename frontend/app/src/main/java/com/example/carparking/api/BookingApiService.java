@@ -12,7 +12,7 @@ import retrofit2.http.Query;
 public interface BookingApiService {
     @GET("booking/list")
     Call<ResponseWrapper<List<BookingListing>>> getMyBookings(
-            @Query("startTime") Long startTimeUnixMs,
-            @Query("endTime") Long endTimeUnixMs
+            @Query("startDate") long startTimeUnixMs,
+            @Query("endDate") long endTimeUnixMs
     );
 }

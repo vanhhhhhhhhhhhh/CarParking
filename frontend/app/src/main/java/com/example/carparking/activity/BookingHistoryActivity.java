@@ -1,9 +1,12 @@
 package com.example.carparking.activity;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ import com.example.carparking.util.SharedPrefManager;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -43,9 +47,11 @@ public class BookingHistoryActivity extends AppCompatActivity
     private BookingAdapter bookingAdapter;
     private List<BookingListing> bookingList;
     private ProgressBar historyProgressBar;
+    private LinearLayout emptyStateView;
     private Long startDateUnixMs;
     private Long endDateUnixMs;
     private BookingApiService bookingApiService;
+    private DateRangeFragment dateRangeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +75,6 @@ public class BookingHistoryActivity extends AppCompatActivity
 
         initViews();
         setupRecyclerView();
-        loadData();
     }
 
     @Override
@@ -83,13 +88,18 @@ public class BookingHistoryActivity extends AppCompatActivity
     private void initViews() {
         chipGroupFilters = findViewById(R.id.chipGroupFilters);
         recyclerViewBookings = findViewById(R.id.recyclerViewBookings);
+        emptyStateView = findViewById(R.id.emptyStateView);
 
         chipGroupFilters.setOnCheckedStateChangeListener(this);
 
         historyProgressBar = findViewById(R.id.historyLoadingProgress);
 
-        DateRangeFragment dateRangeFragment = (DateRangeFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.dateRangeFragmentContainer);
+        dateRangeFragment = new DateRangeFragment();
+        dateRangeFragment.setDateRangeListener(this);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.dateRangeFragmentContainer, dateRangeFragment)
+                .commit();
+        setTime(7);
     }
 
     private void setupRecyclerView() {
@@ -107,6 +117,7 @@ public class BookingHistoryActivity extends AppCompatActivity
     private void loadData() {
         historyProgressBar.setVisibility(VISIBLE);
         recyclerViewBookings.setVisibility(INVISIBLE);
+        emptyStateView.setVisibility(GONE);
 
         bookingApiService.getMyBookings(startDateUnixMs, endDateUnixMs).enqueue(new Callback<>() {
             @Override
@@ -117,6 +128,12 @@ public class BookingHistoryActivity extends AppCompatActivity
                     bookingAdapter.notifyDataSetChanged();
                     historyProgressBar.setVisibility(INVISIBLE);
                     recyclerViewBookings.setVisibility(VISIBLE);
+
+                    if (bookingList.isEmpty()) {
+                        emptyStateView.setVisibility(VISIBLE);
+                    } else {
+                        emptyStateView.setVisibility(GONE);
+                    }
                 } else {
                     Toast.makeText(BookingHistoryActivity.this, "Failed to load bookings", Toast.LENGTH_SHORT).show();
                 }
@@ -131,15 +148,23 @@ public class BookingHistoryActivity extends AppCompatActivity
         });
     }
 
+    private void setTime(int lastNDays) {
+        Calendar from = Calendar.getInstance();
+        from.add(Calendar.DAY_OF_YEAR, -lastNDays);
+        Calendar to = Calendar.getInstance();
+
+        dateRangeFragment.setSelectedDates(from.getTime(), to.getTime());
+    }
+
     private void filterBookings(int checkedChipId) {
         if (checkedChipId == R.id.chipLast7Days) {
-            Toast.makeText(this, "Filtering bookings for the last 7 days", Toast.LENGTH_SHORT).show();
+            setTime(7);
         } else if (checkedChipId == R.id.chipLast1Month) {
-            Toast.makeText(this, "Filtering bookings for the last 1 month", Toast.LENGTH_SHORT).show();
+            setTime(30);
         } else if (checkedChipId == R.id.chipLast6Months) {
-            Toast.makeText(this, "Filtering bookings for the last 6 months", Toast.LENGTH_SHORT).show();
+            setTime(180);
         } else if (checkedChipId == R.id.chipLast1Year) {
-            Toast.makeText(this, "Filtering bookings for the last 1 year", Toast.LENGTH_SHORT).show();
+            setTime(365);
         }
     }
 

@@ -30,10 +30,6 @@ public class DateRangeFragment extends Fragment {
     private Date selectedEndDate;
     private OnDateRangeSelectedListener dateRangeListener;
 
-    public static DateRangeFragment newInstance() {
-        return new DateRangeFragment();
-    }
-
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -56,6 +52,7 @@ public class DateRangeFragment extends Fragment {
 
         startDateInput = view.findViewById(R.id.etStartDateEditText);
         endDateInput = view.findViewById(R.id.etEndDateEditText);
+        updateDateInputs();
 
         startDateInput.setOnClickListener(this::showDatePicker);
         endDateInput.setOnClickListener(this::showDatePicker);
@@ -86,6 +83,10 @@ public class DateRangeFragment extends Fragment {
     }
 
     private void updateDateInputs() {
+        if (startDateInput == null || endDateInput == null) {
+            return;
+        }
+
         if (selectedStartDate != null) {
             startDateInput.setText(DateUtils.formatDate(selectedStartDate));
         } else {
@@ -115,6 +116,9 @@ public class DateRangeFragment extends Fragment {
         this.selectedStartDate = startDate;
         this.selectedEndDate = endDate;
         updateDateInputs();
+        if (dateRangeListener != null) {
+            dateRangeListener.onDateRangeSelected(selectedStartDate, selectedEndDate);
+        }
     }
 
     @Override

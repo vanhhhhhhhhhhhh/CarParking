@@ -49,6 +49,10 @@
     <string name="status_icon">Trạng thái</string>
     <string name="date_range_label">Chọn khoảng ngày</string>
 
+    <!-- Empty State Strings -->
+    <string name="no_bookings_found">Không có đặt chỗ nào</string>
+    <string name="no_bookings_message">Bạn chưa có lịch sử đặt chỗ nào trong khoảng thời gian này. Hãy thử chọn khoảng thời gian khác hoặc tạo đặt chỗ mới.</string>
+
     <!-- Booking Strings -->
     <string name="booking_title">Đặt chỗ</string>
     <string name="parking_name_sample">Bãi đỗ Long Xuyên</string>

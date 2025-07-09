@@ -3,7 +3,14 @@ const LicensePlate = require('../model/LicensePlate')
 const Parking = require('../model/Parking')
 
 const isValidUnixMillisecond = (unixMillisecond) => {
-    return typeof unixMillisecond === 'number' && unixMillisecond >= 0
+    if (typeof unixMillisecond === 'string') {
+        const parsed = parseInt(unixMillisecond);
+        return !Number.isNaN(parsed) && parsed >= 0
+    } else if (typeof unixMillisecond === 'number') {
+        return unixMillisecond >= 0
+    } else {
+        return false
+    }
 }
 
 const checkOverLap = async (startTimeDate, endTimeDate, parkingId) => {
@@ -84,8 +91,8 @@ const bookingController = {
                 return res.status(400).json({ message: 'Thời gian đặt chỗ phải nhỏ hơn hoặc bằng 2 ngày' });
             }
 
-            const startTimeDate = new Date(startTime)
-            const endTimeDate = new Date(endTime)
+            const startTimeDate = new Date(parseInt(startTime))
+            const endTimeDate = new Date(parseInt(endTime))
 
             if (parking.availableSlots <= 0) {
                 return res.status(400).json({ message: 'Bãi đỗ đã đầy' });
@@ -115,6 +122,7 @@ const bookingController = {
             });
 
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ message: 'Lỗi server' });
         }
     },
@@ -126,13 +134,17 @@ const bookingController = {
             if (!parkingId || !startTime || !endTime) {
                 return res.status(400).json({ message: 'Vui lòng nhập đầy đủ các trường' });
             }
+           
+            if (!isValidUnixMillisecond(startTime) || !isValidUnixMillisecond(endTime)) {
+                return res.status(400).json({ message: 'Thời gian không hợp lệ' });
+            }
 
             const parking = await Parking.findById(parkingId)
             if (!parking) {
                 return res.status(400).json({ message: 'Bãi đỗ không tồn tại' });
             }
 
-            const durationInMilliseconds = endTime - startTime
+            const durationInMilliseconds = parseInt(endTime) - parseInt(startTime);
 
             if (durationInMilliseconds < ONE_HOUR_IN_MILLISECONDS) {
                 return res.status(400).json({ message: 'Thời gian đặt chỗ phải lớn hơn hoặc bằng 1 giờ' });
@@ -146,22 +158,20 @@ const bookingController = {
 
             return res.status(200).json({ data: totalPrice })
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ message: 'Lỗi server' })
         }
     },
 
     listBookings: async (req, res) => {
         try {
-            const query = { userId: req.userId }
-
             if (!isValidUnixMillisecond(req.query.startDate) || !isValidUnixMillisecond(req.query.endDate)) {
                 return res.status(400).json({ message: 'Thời gian không hợp lệ' });
             }
 
-            if (req.query.startDate && req.query.endDate) {
-                query.startTime = { $gte: new Date(req.query.startDate) }
-                query.endTime = { $lte: new Date(req.query.endDate) + ONE_DAY_IN_MILLISECONDS }
-            }
+            const query = { userId: req.userId }
+            query.startTime = { $gte: new Date(parseInt(req.query.startDate)) }
+            query.endTime = { $lte: new Date(parseInt(req.query.endDate)) + ONE_DAY_IN_MILLISECONDS }
 
             const bookings = await Booking.find(query).populate('parkingId')
             const mappedBookings = bookings.map(b => ({
@@ -175,6 +185,7 @@ const bookingController = {
             }));
             return res.status(200).json({ data: mappedBookings })
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ message: 'Lỗi server' })
         }
     },
@@ -200,6 +211,7 @@ const bookingController = {
 
             return res.status(200).json({ message: 'Hủy đặt chỗ thành công' })
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ message: 'Lỗi server' })
         }
     }
