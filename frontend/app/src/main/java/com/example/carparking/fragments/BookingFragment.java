@@ -35,7 +35,6 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
     private ImageView parkingImage;
     private TextView parkingName;
     private TextView parkingStatus;
-    private TextView operatingHours;
     private TextView pricePerHour;
     private ChipGroup chipGroupLicensePlates;
     private ChipGroup chipGroupTimeSlots;
@@ -78,7 +77,6 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
         parkingImage = view.findViewById(R.id.parkingImage);
         parkingName = view.findViewById(R.id.parkingName);
         parkingStatus = view.findViewById(R.id.parkingStatus);
-        operatingHours = view.findViewById(R.id.operatingHours);
         pricePerHour = view.findViewById(R.id.pricePerHour);
         chipGroupLicensePlates = view.findViewById(R.id.chipGroupLicensePlates);
         chipGroupTimeSlots = view.findViewById(R.id.chipGroupTimeSlots);
@@ -139,10 +137,9 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
         }
     }
 
-    public void setParkingData(String name, String status, String hours, int price) {
+    public void setParkingData(String name, String status, int price) {
         if (parkingName != null) parkingName.setText(name);
         if (parkingStatus != null) parkingStatus.setText(status);
-        if (operatingHours != null) operatingHours.setText(hours);
         if (pricePerHour != null) pricePerHour.setText(price);
     }
 

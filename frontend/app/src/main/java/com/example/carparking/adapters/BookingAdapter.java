@@ -13,22 +13,22 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
-import com.example.carparking.model.BookingDemo;
+import com.example.carparking.model.BookingListing;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
 public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingViewHolder> {
 
-    private final List<BookingDemo> bookings;
+    private final List<BookingListing> bookings;
     private final Context context;
     private OnBookingClickListener listener;
 
     public interface OnBookingClickListener {
-        void onViewDetailsClick(BookingDemo booking);
+        void onViewDetailsClick(BookingListing booking);
     }
 
-    public BookingAdapter(Context context, List<BookingDemo> bookings) {
+    public BookingAdapter(Context context, List<BookingListing> bookings) {
         this.context = context;
         this.bookings = bookings;
     }
@@ -46,7 +46,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
 
     @Override
     public void onBindViewHolder(@NonNull BookingViewHolder holder, int position) {
-        BookingDemo booking = bookings.get(position);
+        BookingListing booking = bookings.get(position);
         holder.bind(booking);
     }
 
@@ -75,11 +75,11 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
             btnViewDetails = itemView.findViewById(R.id.btnViewDetails);
         }
 
-        public void bind(BookingDemo booking) {
+        public void bind(BookingListing booking) {
             tvAddress.setText(booking.getAddress());
-            tvPrice.setText(booking.getPrice());
-            tvTime.setText(booking.getTime());
-            tvStatus.setText(booking.getStatus().getDisplayName());
+            tvPrice.setText(booking.getTotalPrice());
+            tvTime.setText(booking.getStartTime() + " - " + booking.getEndTime());
+            tvStatus.setText(booking.getStatus().toString());
 
             setStatusAppearance(booking.getStatus());
 
@@ -90,7 +90,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
             });
         }
 
-        private void setStatusAppearance(BookingDemo.Status status) {
+        private void setStatusAppearance(BookingListing.Status status) {
             int backgroundColor;
             int iconResource;
             int iconTint;

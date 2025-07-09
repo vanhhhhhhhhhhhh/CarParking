@@ -4,7 +4,8 @@ const cors = require('cors')
 require('dotenv').config()
 const apiUser = require('./router/apiUser')
 const apiParking = require('./router/apiParking')
-
+const apiLicensePlate = require('./router/apiLicensePlate')
+const apiBooking = require('./router/apiBooking')
 
 
 const hostname = process.env.HOSTNAME
@@ -31,6 +32,11 @@ app.use('/auth', apiUser)
 // PARKING
 app.use('/parking', apiParking)
 
+// LICENSE PLATE
+app.use('/license-plate', apiLicensePlate)
+
+// BOOKING
+app.use('/booking', apiBooking)
 
 app.listen(port, () => {
     console.log(`Server is running on http://${hostname}:${port}`);

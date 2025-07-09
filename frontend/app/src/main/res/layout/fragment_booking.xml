@@ -57,8 +57,8 @@
 
                 <LinearLayout
                     android:id="@+id/parkingInfoContainer"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="383dp"
+                    android:layout_height="42dp"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginBottom="16dp"
                     android:orientation="horizontal"
@@ -98,43 +98,7 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="4dp"
-                        android:alpha="0.6"
-                        android:background="@color/outline" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:alpha="0.5"
-                            android:text="@string/operating_hours_label"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/operatingHours"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="@string/operating_hours_sample"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="4dp"
+                        android:layout_marginHorizontal="8dp"
                         android:alpha="0.6"
                         android:background="@color/outline" />
 

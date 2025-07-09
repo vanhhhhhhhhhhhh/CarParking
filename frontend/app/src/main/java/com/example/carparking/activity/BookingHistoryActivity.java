@@ -1,6 +1,10 @@
 package com.example.carparking.activity;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,13 +19,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
 import com.example.carparking.adapters.BookingAdapter;
+import com.example.carparking.api.ApiClient;
+import com.example.carparking.api.BookingApiService;
 import com.example.carparking.fragments.DateRangeFragment;
-import com.example.carparking.model.BookingDemo;
+import com.example.carparking.model.BookingListing;
+import com.example.carparking.model.ResponseWrapper;
+import com.example.carparking.util.SharedPrefManager;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BookingHistoryActivity extends AppCompatActivity
         implements ChipGroup.OnCheckedStateChangeListener, DateRangeFragment.OnDateRangeSelectedListener {
@@ -29,7 +41,11 @@ public class BookingHistoryActivity extends AppCompatActivity
     private ChipGroup chipGroupFilters;
     private RecyclerView recyclerViewBookings;
     private BookingAdapter bookingAdapter;
-    private List<BookingDemo> bookingList;
+    private List<BookingListing> bookingList;
+    private ProgressBar historyProgressBar;
+    private Long startDateUnixMs;
+    private Long endDateUnixMs;
+    private BookingApiService bookingApiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +58,9 @@ public class BookingHistoryActivity extends AppCompatActivity
             return insets;
         });
 
+        SharedPrefManager manager = SharedPrefManager.getInstance(this);
+        bookingApiService = ApiClient.getClient(manager.getToken()).create(BookingApiService.class);
+
         ActionBar appbar = getSupportActionBar();
         if (appbar != null) {
             appbar.setDisplayHomeAsUpEnabled(true);
@@ -50,20 +69,24 @@ public class BookingHistoryActivity extends AppCompatActivity
 
         initViews();
         setupRecyclerView();
-        loadSampleData();
+        loadData();
     }
 
     @Override
     public void onDateRangeSelected(Date startDate, Date endDate) {
-        Toast.makeText(this, "Date range selected: " + startDate + " to " + endDate, Toast.LENGTH_SHORT).show();
-    }
+        startDateUnixMs = startDate.getTime();
+        endDateUnixMs = endDate.getTime();
 
+        loadData();
+    }
 
     private void initViews() {
         chipGroupFilters = findViewById(R.id.chipGroupFilters);
         recyclerViewBookings = findViewById(R.id.recyclerViewBookings);
 
         chipGroupFilters.setOnCheckedStateChangeListener(this);
+
+        historyProgressBar = findViewById(R.id.historyLoadingProgress);
 
         DateRangeFragment dateRangeFragment = (DateRangeFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.dateRangeFragmentContainer);
@@ -81,17 +104,31 @@ public class BookingHistoryActivity extends AppCompatActivity
         });
     }
 
-    private void loadSampleData() {
-        bookingList.clear();
+    private void loadData() {
+        historyProgressBar.setVisibility(VISIBLE);
+        recyclerViewBookings.setVisibility(INVISIBLE);
 
-        bookingList.add(new BookingDemo("1", "Địa chỉ 1", "6:00 - 12:00", "200.000 VND", BookingDemo.Status.COMPLETED));
-        bookingList.add(new BookingDemo("2", "Vincom Center", "14:00 - 18:00", "150.000 VND", BookingDemo.Status.PENDING));
-        bookingList.add(new BookingDemo("3", "Lotte Center", "8:00 - 17:00", "300.000 VND", BookingDemo.Status.CONFIRMED));
-        bookingList.add(new BookingDemo("4", "Times City", "10:00 - 15:00", "180.000 VND", BookingDemo.Status.CANCELLED));
-        bookingList.add(new BookingDemo("5", "Royal City", "9:00 - 16:00", "250.000 VND", BookingDemo.Status.COMPLETED));
-        bookingList.add(new BookingDemo("6", "Indochina Plaza", "7:00 - 19:00", "400.000 VND", BookingDemo.Status.CONFIRMED));
+        bookingApiService.getMyBookings(startDateUnixMs, endDateUnixMs).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<ResponseWrapper<List<BookingListing>>> call, Response<ResponseWrapper<List<BookingListing>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    bookingList.clear();
+                    bookingList.addAll(response.body().data);
+                    bookingAdapter.notifyDataSetChanged();
+                    historyProgressBar.setVisibility(INVISIBLE);
+                    recyclerViewBookings.setVisibility(VISIBLE);
+                } else {
+                    Toast.makeText(BookingHistoryActivity.this, "Failed to load bookings", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-        bookingAdapter.notifyDataSetChanged();
+            @Override
+            public void onFailure(Call<ResponseWrapper<List<BookingListing>>> call, Throwable t) {
+                Toast.makeText(BookingHistoryActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                historyProgressBar.setVisibility(INVISIBLE);
+                recyclerViewBookings.setVisibility(VISIBLE);
+            }
+        });
     }
 
     private void filterBookings(int checkedChipId) {

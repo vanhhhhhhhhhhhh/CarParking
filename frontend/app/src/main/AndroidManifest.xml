@@ -19,7 +19,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyABN_OqsglqzFk-Ci-cI-WtaUwE7apWD4g" />
-
         <activity
             android:name=".activity.AdminHomeActivity"
             android:exported="false"
@@ -34,11 +33,9 @@
         <activity
             android:name=".activity.MapActivity"
             android:exported="false" />
-        <activity
-            android:name=".activity.HomeActivity"
-            android:exported="false" >
+
         <!-- AUTHENTICATION -->
-        </activity> 
+        <activity
             android:name=".activity.LauncherActivity"
             android:exported="true"
             android:theme="@style/Theme.CarParking.NoActionBar">
@@ -50,8 +47,7 @@
         </activity>
         <activity
             android:name=".activity.HomeActivity"
-            android:exported="false"
-            android:theme="@style/Theme.CarParking.NoActionBar" />
+            android:exported="false" />
         <!-- AUTHENTICATION -->
         <activity
             android:name=".activity.RegisterActivity"

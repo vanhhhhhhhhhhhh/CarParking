@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Call<ResponseWrapper<User>> call, Response<ResponseWrapper<User>> response) {
                     if (response.isSuccessful() && response.body() != null && response.body().success) {
                         String token = response.body().accessToken;
-                        User loggedInUser = response.body().user;
+                        User loggedInUser = response.body().data;
 
                         if (loggedInUser != null) {
                             String fullName = loggedInUser.fullName;
