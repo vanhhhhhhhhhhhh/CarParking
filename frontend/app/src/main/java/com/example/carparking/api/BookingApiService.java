@@ -1,12 +1,16 @@
 package com.example.carparking.api;
 
+import com.example.carparking.model.Booking;
+import com.example.carparking.model.BookingBody;
 import com.example.carparking.model.BookingListing;
 import com.example.carparking.model.ResponseWrapper;
 
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface BookingApiService {
@@ -15,4 +19,10 @@ public interface BookingApiService {
             @Query("startDate") long startTimeUnixMs,
             @Query("endDate") long endTimeUnixMs
     );
+
+    @POST("booking/create")
+    Call<ResponseWrapper<Booking>> createBooking(@Body BookingBody bookingInfo);
+
+    @POST("booking/calculate-price")
+    Call<ResponseWrapper<Integer>> calculatePrice(@Body BookingBody bookingInfo);
 }

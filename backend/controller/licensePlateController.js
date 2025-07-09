@@ -3,7 +3,7 @@ const LicensePlate = require('../model/LicensePlate')
 const licensePlateController = {
     createLicensePlate: async (req, res) => {
         try {
-            const {
+            let {
                 licensePlate
             } = req.body;
 
@@ -13,7 +13,9 @@ const licensePlateController = {
                 return res.status(400).json({ message: 'Vui lòng nhập đầy đủ các trường' });
             }
 
-            const existing = await LicensePlate.findOne({ licensePlate });
+            licensePlate = licensePlate.trim().toUpperCase();
+
+            const existing = await LicensePlate.findOne({ licensePlate, userId: req.userId });
             if (existing) {
                 return res.status(400).json({ message: 'Biển số xe đã có mặt trong hệ thống' });
             }
@@ -29,6 +31,7 @@ const licensePlateController = {
             });
 
         } catch (error) {
+            console.error('Error creating license plate:', error);
             return res.status(500).json({ message: 'Lỗi server' });
         }
     },
@@ -38,6 +41,7 @@ const licensePlateController = {
             const licensePlates = await LicensePlate.find({userId: req.userId})
             return res.status(200).json({data: licensePlates})
         } catch (error) {
+            console.error('Error listing license plates:', error);
             return res.status(500).json({ message: 'Lỗi server' })
         }
     },

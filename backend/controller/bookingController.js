@@ -130,6 +130,7 @@ const bookingController = {
     calculatePrice: async (req, res) => {
         try {
             const { parkingId, startTime, endTime } = req.body
+            console.log(req.body)
 
             if (!parkingId || !startTime || !endTime) {
                 return res.status(400).json({ message: 'Vui lòng nhập đầy đủ các trường' });
@@ -169,9 +170,11 @@ const bookingController = {
                 return res.status(400).json({ message: 'Thời gian không hợp lệ' });
             }
 
+            console.log(req.query.startDate, req.query.endDate)
+
             const query = { userId: req.userId }
-            query.startTime = { $gte: new Date(parseInt(req.query.startDate)) }
-            query.endTime = { $lte: new Date(parseInt(req.query.endDate)) + ONE_DAY_IN_MILLISECONDS }
+            query.startTime = { $lte: new Date(parseInt(req.query.endDate)) }
+            query.endTime = { $gte: new Date(parseInt(req.query.startDate)) }
 
             const bookings = await Booking.find(query).populate('parkingId')
             const mappedBookings = bookings.map(b => ({

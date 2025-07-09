@@ -13,6 +13,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ParkingApiService {
@@ -36,5 +37,10 @@ public interface ParkingApiService {
             @Query("latitude") Double latitude,
             @Query("longitude") Double longitude,
             @Query("distance") Double distance
+    );
+
+    @GET("parking/{id}")
+    Call<ResponseWrapper<Parking>> getParkingById(
+            @Path("id") String id
     );
 }

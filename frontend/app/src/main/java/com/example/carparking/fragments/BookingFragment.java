@@ -14,7 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.carparking.R;
+import com.example.carparking.model.LicensePlate;
+import com.example.carparking.util.StringUtils;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -27,8 +30,8 @@ import java.util.Locale;
 public class BookingFragment extends Fragment implements TimeRangeFragment.OnTimeRangeSelectedListener {
 
     public interface OnBookingActionListener {
-        void onBookingClicked(String licensePlate, Date startTime, Date endTime);
-        void onBookingChanged(String licensePlate, Date startTime, Date endTime);
+        void onBookingClicked(LicensePlate licensePlate, Date startTime, Date endTime);
+        void onBookingChanged(LicensePlate licensePlate, Date startTime, Date endTime);
         void onAddNewLicensePlateClicked();
     }
 
@@ -44,11 +47,11 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
     private TimeRangeFragment timeRangeFragment;
 
     private OnBookingActionListener bookingListener;
-    private String selectedLicensePlate;
+    private LicensePlate selectedLicensePlate;
     private String selectedTimeSlot;
     private Date selectedStartTime;
     private Date selectedEndTime;
-    private List<String> licensePlates;
+    private List<LicensePlate> licensePlates;
     private boolean allowBooking = false;
 
     @Override
@@ -106,7 +109,7 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
             int id = chipGroupLicensePlates.getCheckedChipId();
             Chip chip = group.findViewById(id);
             if (chip != null) {
-                selectedLicensePlate = chip.getText().toString();
+                selectedLicensePlate = (LicensePlate) chip.getTag();
                 if (bookingListener != null) {
                     bookingListener.onBookingChanged(selectedLicensePlate, selectedStartTime, selectedEndTime);
                 }
@@ -140,24 +143,29 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
     public void setParkingData(String name, String status, int price) {
         if (parkingName != null) parkingName.setText(name);
         if (parkingStatus != null) parkingStatus.setText(status);
-        if (pricePerHour != null) pricePerHour.setText(price);
+        if (pricePerHour != null) pricePerHour.setText(StringUtils.moneyFormat(price));
     }
 
-    public void setParkingImage(int imageResId) {
-        if (parkingImage != null) {
-            parkingImage.setImageResource(imageResId);
+    public void setParkingImage(String imageUrl) {
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_parking)
+                .error(R.drawable.ic_parking)
+                .into(parkingImage);
         }
     }
 
-    public void setLicensePlates(List<String> plates) {
+    public void setLicensePlates(List<LicensePlate> plates) {
         if (chipGroupLicensePlates != null) {
             chipGroupLicensePlates.removeAllViews();
             
             for (int i = 0; i < plates.size(); i++) {
                 Chip chip = new Chip(getContext());
-                chip.setText(plates.get(i));
+                chip.setText(plates.get(i).getLicensePlate());
                 chip.setId(View.generateViewId());
                 chip.setCheckable(true);
+                chip.setTag(plates.get(i));
 
                 if (i == 0) {
                     chip.setChecked(true);
@@ -199,7 +207,7 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
     }
 
     public void updateTotalPrice(int price) {
-        String formattedPrice = String.format(Locale.getDefault(), "%d VND", price);
+        String formattedPrice = String.format(Locale.getDefault(), "%s VND", StringUtils.moneyFormat(price));
         totalPrice.setText(formattedPrice);
     }
 
@@ -218,4 +226,4 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
         super.onDetach();
         bookingListener = null;
     }
-} 
+}

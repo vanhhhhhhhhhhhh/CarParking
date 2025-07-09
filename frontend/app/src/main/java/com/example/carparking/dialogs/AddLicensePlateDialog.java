@@ -71,9 +71,7 @@ public class AddLicensePlateDialog extends DialogFragment {
     }
 
     private boolean isValidLicensePlate(String licensePlate) {
-        // Basic validation for Vietnamese license plates
-        // Format: 2-3 digits + letter + 4-5 digits (e.g., 30A12345, 123B45678)
-        return licensePlate.matches("^\\d{2,3}[A-Z]\\d{4,5}$");
+        return !licensePlate.isEmpty();
     }
 
     public void setOnLicensePlateAddedListener(OnLicensePlateAddedListener listener) {

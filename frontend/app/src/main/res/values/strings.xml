@@ -85,4 +85,14 @@
     <string name="add">Thêm</string>
 
     <string name="google_maps_key">AIzaSyABN_OqsglqzFk-Ci-cI-WtaUwE7apWD4g</string>
+    <string name="parking_available">Còn %d chỗ</string>
+    <string name="parking_full">Đã đầy chỗ</string>
+    <string name="error_creating_license_plate">Đã có lỗi khi tạo biển số</string>
+
+    <!-- Booking Confirmation Dialog -->
+    <string name="booking_success_title">Đặt chỗ thành công</string>
+    <string name="booking_success_message">Đặt chỗ của bạn đã được tạo thành công. Bạn có muốn xem lịch sử đặt chỗ không?</string>
+    <string name="yes">Có</string>
+    <string name="no">Không</string>
+    <string name="error_creating_booking">Có lỗi xảy ra khi tạo booking</string>
 </resources>

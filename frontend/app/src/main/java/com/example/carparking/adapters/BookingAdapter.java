@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.carparking.R;
 import com.example.carparking.model.BookingListing;
 import com.example.carparking.model.BookingStatus;
+import com.example.carparking.util.StringUtils;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -78,9 +79,9 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
 
         public void bind(BookingListing booking) {
             tvAddress.setText(booking.getAddress());
-            tvPrice.setText(booking.getTotalPrice());
+            tvPrice.setText(StringUtils.moneyFormat(booking.getTotalPrice()));
             tvTime.setText(booking.getStartTime() + " - " + booking.getEndTime());
-            tvStatus.setText(booking.getStatus().toString());
+            tvStatus.setText(booking.getStatus().getDisplayName());
 
             setStatusAppearance(booking.getStatus());
 
