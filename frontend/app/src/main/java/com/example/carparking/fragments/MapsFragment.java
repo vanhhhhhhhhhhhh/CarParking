@@ -15,11 +15,17 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.carparking.R;
+import com.example.carparking.model.Parking;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,12 +34,25 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 public class MapsFragment extends Fragment {
 
+    public interface OnParkingClickListener {
+        void onParkingClick(Parking parking);
+    }
+
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private GoogleMap googleMap;
+    private OnParkingClickListener onParkingClickListener;
+    private List<Parking> parkingList;
+
+    public void setOnParkingClickListener(OnParkingClickListener listener) {
+        this.onParkingClickListener = listener;
+    }
 
     @SuppressLint("MissingPermission")
     @Override
@@ -76,6 +95,10 @@ public class MapsFragment extends Fragment {
             settings.setMyLocationButtonEnabled(false);
 
             focusOnMyLocation();
+
+            if (parkingList != null) {
+                displayParkingMarkers();
+            }
         }
     };
 
@@ -112,5 +135,80 @@ public class MapsFragment extends Fragment {
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
                     }
                 });
+    }
+
+    public void focusOnLocation(double latitude, double longitude) {
+        if (googleMap != null) {
+            LatLng location = new LatLng(latitude, longitude);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 20));
+        }
+    }
+
+    public void setParkings(List<Parking> parkings) {
+        this.parkingList = parkings;
+        if (googleMap != null && parkings != null) {
+            displayParkingMarkers();
+        }
+    }
+
+    private void displayParkingMarkers() {
+        if (googleMap == null || parkingList == null) return;
+
+        googleMap.clear();
+
+        googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(@NonNull Marker marker) {
+                if (onParkingClickListener != null) {
+                    Parking parking = (Parking) marker.getTag();
+                    if (parking != null) {
+                        onParkingClickListener.onParkingClick(parking);
+                    }
+                }
+            }
+        });
+
+        googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+
+                TextView tvParkingName = infoWindow.findViewById(R.id.tv_parking_name);
+
+                Parking parking = (Parking) marker.getTag();
+                if (parking != null) {
+                    tvParkingName.setText(parking.getName());
+                }
+
+                return infoWindow;
+            }
+        });
+
+        for (Parking parking : parkingList) {
+            if (parking.getLocation() != null &&
+                    parking.getLocation().coordinates != null &&
+                    parking.getLocation().coordinates.size() >= 2) {
+
+                double longitude = parking.getLocation().coordinates.get(0);
+                double latitude = parking.getLocation().coordinates.get(1);
+
+                LatLng position = new LatLng(latitude, longitude);
+
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(position)
+                        .title(parking.getName())
+                        .snippet(parking.getAvailableSlots() + "/" + parking.getTotalSlots());
+
+                Marker marker = googleMap.addMarker(markerOptions);
+                if (marker != null) {
+                    marker.setTag(parking);
+                }
+            }
+        }
     }
 }

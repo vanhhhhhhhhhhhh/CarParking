@@ -84,7 +84,34 @@ const parkingController = {
     },
     listParking: async (req, res) => {
         try {
-            const parkings = await Parking.find()
+            const { 
+                latitude,
+                longitude,
+                distance = 500,
+                name
+            } = req.query
+
+            console.log('Query parameters:', req.query);
+
+            const query = {}
+
+            if (name) {
+                query.name = { $regex: name, $options: 'i' } 
+            }
+
+            if (latitude && longitude) {
+                query.location = {
+                    $near: {
+                        $geometry: {
+                            type: 'Point',
+                            coordinates: [parseFloat(longitude), parseFloat(latitude)]
+                        },
+                        $maxDistance: parseInt(distance) 
+                    }
+                }
+            }
+
+            const parkings = await Parking.find(query)
             return res.status(200).json({data: parkings})
         } catch (error) {
             return res.status(500).json(error.message)
@@ -115,9 +142,19 @@ const parkingController = {
         } catch (error) {
             return res.status(500).json(error.message)
         }
+    },
+    getParkingById: async (req, res) => {
+        try {
+            const pid = req.params.id
+            const parking = await Parking.findById(pid)
+            if (!parking) {
+                return res.status(404).json({ message: 'Bãi đỗ xe không tồn tại' });
+            }
+            return res.status(200).json({ data: parking });
+        } catch (error) {
+            return res.status(500).json(error.message);
+        }
     }
-
-
 }
 
 module.exports = parkingController

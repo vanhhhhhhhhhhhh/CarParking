@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
 import com.example.carparking.model.BookingListing;
+import com.example.carparking.model.BookingStatus;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -90,7 +91,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
             });
         }
 
-        private void setStatusAppearance(BookingListing.Status status) {
+        private void setStatusAppearance(BookingStatus status) {
             int backgroundColor;
             int iconResource;
             int iconTint;

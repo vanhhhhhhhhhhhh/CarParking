@@ -7,27 +7,8 @@ public class BookingListing {
     private int totalPrice;
     private String parkingName;
     private String address;
-    public enum Status {
-        @SerializedName("completed")
-        COMPLETED("Đã hoàn thành"),
-        @SerializedName("pending")
-        PENDING("Đang chờ xác nhận"),
-        @SerializedName("confirmed")
-        CONFIRMED("Đã xác nhận"),
-        @SerializedName("cancelled")
-        CANCELLED("Đã hủy");
 
-        private final String displayName;
-
-        Status(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-    }
-    private Status status;
+    private BookingStatus status;
     private String startTime;
     private String endTime;
 
@@ -63,11 +44,11 @@ public class BookingListing {
         this.address = address;
     }
 
-    public Status getStatus() {
+    public BookingStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(BookingStatus status) {
         this.status = status;
     }
 

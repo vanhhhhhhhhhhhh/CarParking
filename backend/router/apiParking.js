@@ -10,4 +10,6 @@ router.get('/list', parkingController.listParking)
 
 router.put('/request/:id', middleware.verifyToken, middleware.verifyAdmin, parkingController.manageRequest)
 
+router.get('/:id', parkingController.getParkingById)
+
 module.exports = router

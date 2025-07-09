@@ -39,9 +39,16 @@ public class SearchFragment extends Fragment {
     private SearchResultAdapter.OnSearchItemSelectedListener onSearchItemSelectedCallback;
     private SearchQueryListener searchQueryListener;
     private List<SearchResult> searchResults = new ArrayList<>();
-
+    private boolean disableSearch = false;
     public void setOnSearchItemSelectedCallback(SearchResultAdapter.OnSearchItemSelectedListener callback) {
-        this.onSearchItemSelectedCallback = callback;
+        this.onSearchItemSelectedCallback = searchResult -> {
+            disableSearch = true;
+            etSearch.setText(searchResult.getTitle());
+            etSearch.clearFocus();
+            cvSearchResults.setVisibility(View.GONE);
+            callback.onSearchItemSelected(searchResult);
+        };
+
         if (adapter != null) {
             adapter = new SearchResultAdapter(onSearchItemSelectedCallback);
             rvSearchResults.setAdapter(adapter);
@@ -97,6 +104,10 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (disableSearch) {
+                    disableSearch = false;
+                    return;
+                }
                 updateResultsVisibility();
                 if (searchQueryListener != null)
                     searchQueryListener.doSearch(s.toString().trim());
