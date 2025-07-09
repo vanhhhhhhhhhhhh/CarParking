@@ -64,7 +64,7 @@ const userController = {
                 return res.status(400).json({success: false, message: 'Số điện thoại hoặc mật khẩu không đúng'})
             }
 
-            const accessToken = jwt.sign({userId: user._id}, process.env.ACCESS_TOKEN_SECRET)
+            const accessToken = jwt.sign({userId: user._id, role: user.role}, process.env.ACCESS_TOKEN_SECRET)
 
             return res.status(200).json({success: true, message: 'Đăng nhập thành công', user, accessToken})
         } catch (error) {

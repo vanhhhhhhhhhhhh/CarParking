@@ -1,4 +1,5 @@
 const Parking = require('../model/Parking')
+const User = require('../model/User')
 
 
 const parkingController = {
@@ -78,7 +79,44 @@ const parkingController = {
             });
 
         } catch (error) {
-            return res.status(500).json({ message: error.message });
+            return res.status(500).json(error.message);
+        }
+    },
+
+    listParking: async (req, res) => {
+        try {
+            const parkings = await Parking.find()
+            return res.status(200).json({data: parkings})
+        } catch (error) {
+            return res.status(500).json(error.message)
+        }
+    },
+
+
+    manageRequest: async (req, res) => {
+        try {
+            const pid = req.params.id
+            const {status} = req.body
+
+            if(!['approved', 'rejected'].includes(status)){
+                return res.status(400).json({message: 'Trạng thái không hợp lệ'})
+            }
+
+            const parking = await Parking.findById(pid)
+            if(!parking){
+                return res.status(404).json({message: 'Yêu cầu không tồn tại'})
+            }
+
+            parking.status = status
+            await parking.save()
+
+            if(status === 'approved'){
+                await User.findByIdAndUpdate(parking.ownerId, {role: 'owner'})
+            }
+
+            return res.status(200).json({message: `Yêu cầu đã ${status === 'approved' ? 'được duyệt' : 'bị từ chối'}`, updatedStatus: parking.status})
+        } catch (error) {
+            return res.status(500).json(error.message)
         }
     }
 

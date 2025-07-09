@@ -25,6 +25,26 @@ const middlewareController = {
         } catch (error) {
             return res.status(403).json({ success: false, message: 'Token không hiệu lực' })
         }
+    },
+
+    verifyOwner: (req, res, next) => {
+        if(!req.user){
+            return res.status(401).json({success: false, message: 'Không được phép. Vui lòng đăng nhập'})
+        }
+        if(req.user.role !== 'owner'){
+            return res.status(403).json({success: false, message: 'Yêu cầu bị từ chối. Chỉ có chủ bãi mới có quyền'})
+        }
+        next()
+    },
+
+    verifyAdmin: (req, res, next) => {
+        if(!req.user){
+            return res.status(401).json({success: false, message: 'Không được phép. Vui lòng đăng nhập'})
+        }
+        if(req.user.role !== 'admin'){
+            return res.status(403).json({success: false, message: 'Yêu cầu bị từ chối. Chỉ có admin mới có quyền'})
+        }
+        next()
     }
 
 }
