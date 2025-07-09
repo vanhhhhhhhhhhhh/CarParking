@@ -26,6 +26,10 @@ import java.util.List;
 
 public class SearchFragment extends Fragment {
 
+    public static interface SearchQueryListener {
+        void doSearch(String query);
+    }
+
     private TextInputLayout tilSearch;
     private TextInputEditText etSearch;
     private MaterialCardView cvSearchResults;
@@ -33,6 +37,7 @@ public class SearchFragment extends Fragment {
     private SearchResultAdapter adapter;
 
     private SearchResultAdapter.OnSearchItemSelectedListener onSearchItemSelectedCallback;
+    private SearchQueryListener searchQueryListener;
     private List<SearchResult> searchResults = new ArrayList<>();
 
     public void setOnSearchItemSelectedCallback(SearchResultAdapter.OnSearchItemSelectedListener callback) {
@@ -42,6 +47,10 @@ public class SearchFragment extends Fragment {
             rvSearchResults.setAdapter(adapter);
             adapter.setSearchResults(searchResults);
         }
+    }
+
+    public void setSearchQueryListener(SearchQueryListener listener) {
+        this.searchQueryListener = listener;
     }
 
     public void setSearchResults(List<SearchResult> results) {
@@ -89,7 +98,8 @@ public class SearchFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 updateResultsVisibility();
-                onSearchQueryChanged(s.toString());
+                if (searchQueryListener != null)
+                    searchQueryListener.doSearch(s.toString().trim());
             }
 
             @Override
@@ -97,8 +107,11 @@ public class SearchFragment extends Fragment {
         });
 
         etSearch.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                performSearch(etSearch.getText().toString());
+            if (actionId == EditorInfo.IME_ACTION_SEARCH && searchQueryListener != null) {
+                String query = etSearch.getText() != null ? etSearch.getText().toString().trim() : "";
+                if (!query.isEmpty()) {
+                    searchQueryListener.doSearch(query);
+                }
                 return true;
             }
             return false;
@@ -112,16 +125,6 @@ public class SearchFragment extends Fragment {
         boolean hasResults = searchResults != null && !searchResults.isEmpty();
         
         cvSearchResults.setVisibility(hasText && hasResults ? View.VISIBLE : View.GONE);
-    }
-
-    private void onSearchQueryChanged(String query) {
-        // Override this method in a subclass or use a callback to handle search logic
-        // For now, this is just a placeholder for search functionality
-    }
-
-    private void performSearch(String query) {
-        // Override this method in a subclass or use a callback to handle search execution
-        // For now, this is just a placeholder for search functionality
     }
 
     public String getSearchQuery() {

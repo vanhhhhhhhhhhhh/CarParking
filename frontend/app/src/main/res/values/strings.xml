@@ -83,4 +83,6 @@
     <string name="enter_license_plate_number">Nhập biển số</string>
     <string name="cancel">Hủy</string>
     <string name="add">Thêm</string>
+
+    <string name="google_maps_key">AIzaSyABN_OqsglqzFk-Ci-cI-WtaUwE7apWD4g</string>
 </resources>

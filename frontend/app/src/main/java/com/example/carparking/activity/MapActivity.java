@@ -1,6 +1,7 @@
 package com.example.carparking.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -11,14 +12,21 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.carparking.R;
+import com.example.carparking.api.PlacesApiService;
 import com.example.carparking.fragments.MapsFragment;
 import com.example.carparking.fragments.SearchFragment;
 import com.example.carparking.model.SearchResult;
+import com.example.carparking.util.Debouncer;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements SearchFragment.SearchQueryListener {
+
+    private static final String TAG = "MapActivity";
+    private PlacesApiService placesApiService;
+    private SearchFragment searchFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +59,7 @@ public class MapActivity extends AppCompatActivity {
 
 
     private void setupSearchFragment() {
-        SearchFragment searchFragment = new SearchFragment();
+        searchFragment = new SearchFragment();
 
         searchFragment.setOnSearchItemSelectedCallback(searchResult -> {
             Toast.makeText(MapActivity.this,
@@ -61,8 +69,9 @@ public class MapActivity extends AppCompatActivity {
             handleSearchResultSelection(searchResult);
         });
 
-        List<SearchResult> sampleResults = createSampleSearchResults();
-        searchFragment.setSearchResults(sampleResults);
+        searchFragment.setSearchQueryListener(this);
+
+        placesApiService = new PlacesApiService(this);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -70,13 +79,46 @@ public class MapActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private List<SearchResult> createSampleSearchResults() {
-        return Arrays.asList(
-                new SearchResult("1", "Parking Location 1", "123 Main Street, District 1", SearchResult.SearchResultType.PARKING_LOCATION),
-                new SearchResult("2", "Building 1", "456 Office Building, District 2", SearchResult.SearchResultType.BUILDING),
-                new SearchResult("3", "Shopping Mall Parking", "789 Shopping Center, District 3", SearchResult.SearchResultType.PARKING_LOCATION),
-                new SearchResult("4", "City Center Building", "321 Business District, District 1", SearchResult.SearchResultType.BUILDING)
-        );
+    private final Debouncer<String> debouncer = new Debouncer<>(400, query -> {
+        performSearch(query);
+    });
+
+    @Override
+    public void doSearch(String query) {
+        debouncer.consume(query);
+    }
+
+    private void performSearch(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            if (searchFragment != null) {
+                searchFragment.setSearchResults(new ArrayList<>());
+            }
+            return;
+        }
+
+        placesApiService.searchBuildings(query, new PlacesApiService.PlacesCallback() {
+            @Override
+            public void onSuccess(List<SearchResult> results) {
+                runOnUiThread(() -> {
+                    if (searchFragment != null) {
+                        searchFragment.setSearchResults(results);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Places search error: " + error);
+                runOnUiThread(() -> {
+                    Toast.makeText(MapActivity.this,
+                        "Search error: " + error,
+                        Toast.LENGTH_SHORT).show();
+                    if (searchFragment != null) {
+                        searchFragment.setSearchResults(new ArrayList<>());
+                    }
+                });
+            }
+        });
     }
 
     private void handleSearchResultSelection(SearchResult searchResult) {
@@ -90,19 +132,17 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    private void openParkingDetails(SearchResult result) {
+
+    }
+
+    private void openBuildingDetails(SearchResult result) {
+
+    }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
-
-
-
-
-    private void openParkingDetails(SearchResult result) {
-    }
-
-    private void openBuildingDetails(SearchResult result) {
-    }
-
 }
