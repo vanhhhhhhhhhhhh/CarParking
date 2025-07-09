@@ -1,7 +1,6 @@
 package com.example.carparking.activity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,9 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
 import com.example.carparking.adapters.BookingAdapter;
-import com.example.carparking.fragment.DateRangeFragment;
+import com.example.carparking.fragments.DateRangeFragment;
 import com.example.carparking.model.BookingDemo;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;

@@ -9,7 +9,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/dateRangeFragmentContainer"
-        android:name="com.example.carparking.fragment.DateRangeFragment"
+        android:name="com.example.carparking.fragments.DateRangeFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -39,7 +39,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipLast7Days"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
@@ -51,7 +51,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipLast1Month"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/last_1_month"
@@ -61,7 +61,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipLast6Months"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/last_6_months"
@@ -71,7 +71,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipLast1Year"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                style="@style/Widget.Material3.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/last_1_year"

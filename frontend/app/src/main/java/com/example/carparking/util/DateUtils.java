@@ -12,4 +12,9 @@ public class DateUtils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         return dateFormat.format(date);
     }
+    
+    public static String formatDateTime(Date date) {
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("HH:mm - dd/MM", Locale.getDefault());
+        return dateTimeFormat.format(date);
+    }
 }

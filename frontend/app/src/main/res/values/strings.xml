@@ -48,4 +48,31 @@
     <string name="money_icon">Tiền</string>
     <string name="status_icon">Trạng thái</string>
     <string name="date_range_label">Chọn khoảng ngày</string>
+
+    <!-- Booking Strings -->
+    <string name="booking_title">Đặt chỗ</string>
+    <string name="parking_name_sample">Bãi đỗ Long Xuyên</string>
+    <string name="status_label">Trạng thái</string>
+    <string name="status_available">Còn chỗ</string>
+    <string name="operating_hours_label">Hoạt động</string>
+    <string name="operating_hours_sample">08:00 - 23:00</string>
+    <string name="price_per_hour_label">Giá theo giờ</string>
+    <string name="price_per_hour_sample">2.300đ / giờ</string>
+    <string name="select_license_plate">Chọn biển số</string>
+    <string name="license_plate_sample_1">99A-123.45</string>
+    <string name="license_plate_sample_2">96A-132.42</string>
+    <string name="add_new_license_plate">+ Thêm biển mới</string>
+    <string name="select_booking_time">Chọn thời gian đặt</string>
+    <string name="time_15_minutes">15 phút</string>
+    <string name="time_30_minutes">30 phút</string>
+    <string name="time_1_hour">1 giờ</string>
+    <string name="time_2_hours">2 giờ</string>
+    <string name="time_5_hours">5 giờ</string>
+    <string name="time_8_hours">8 giờ</string>
+    <string name="total_amount_after_exit">Tiền phải trả sau khi rời bãi</string>
+    <string name="total_price_sample">0 VND</string>
+    <string name="book_now">Đặt chỗ</string>
+    <string name="start_time_label">Giờ bắt đầu</string>
+    <string name="end_time_label">Giờ kết thúc</string>
+    <string name="time_placeholder">HH:mm - mm/dd/yyyy</string>
 </resources>
