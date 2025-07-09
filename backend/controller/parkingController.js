@@ -82,7 +82,6 @@ const parkingController = {
             return res.status(500).json(error.message);
         }
     },
-
     listParking: async (req, res) => {
         try {
             const parkings = await Parking.find()
@@ -91,8 +90,6 @@ const parkingController = {
             return res.status(500).json(error.message)
         }
     },
-
-
     manageRequest: async (req, res) => {
         try {
             const pid = req.params.id

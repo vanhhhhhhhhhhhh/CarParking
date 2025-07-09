@@ -41,10 +41,10 @@ dependencies {
     implementation(libs.fragment)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
+    implementation("com.google.android.libraries.places:places:4.3.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
 }
