@@ -47,7 +47,8 @@
         </activity>
         <activity
             android:name=".activity.HomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.CarParking.NoActionBar" />
         <!-- AUTHENTICATION -->
         <activity
             android:name=".activity.RegisterActivity"

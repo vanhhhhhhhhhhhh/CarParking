@@ -66,7 +66,7 @@ const userController = {
 
             const accessToken = jwt.sign({userId: user._id, role: user.role}, process.env.ACCESS_TOKEN_SECRET)
 
-            return res.status(200).json({success: true, message: 'Đăng nhập thành công', user, accessToken})
+            return res.status(200).json({success: true, message: 'Đăng nhập thành công', data: user, accessToken})
         } catch (error) {
             return res.status(500).json(error.message)
         }
