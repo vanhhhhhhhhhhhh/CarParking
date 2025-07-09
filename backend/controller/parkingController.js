@@ -70,7 +70,7 @@ const parkingController = {
                 openTime,
                 closeTime,
                 imageUrl,
-                ownerId: req.userId, 
+                ownerId: req.userId,
             });
 
             return res.status(201).json({
@@ -84,7 +84,7 @@ const parkingController = {
     },
     listParking: async (req, res) => {
         try {
-            const { 
+            const {
                 latitude,
                 longitude,
                 distance = 500,
@@ -96,7 +96,7 @@ const parkingController = {
             const query = {}
 
             if (name) {
-                query.name = { $regex: name, $options: 'i' } 
+                query.name = { $regex: name, $options: 'i' }
             }
 
             if (latitude && longitude) {
@@ -106,41 +106,52 @@ const parkingController = {
                             type: 'Point',
                             coordinates: [parseFloat(longitude), parseFloat(latitude)]
                         },
-                        $maxDistance: parseInt(distance) 
+                        $maxDistance: parseInt(distance)
                     }
                 }
             }
 
-            const parkings = await Parking.find(query)
-            return res.status(200).json({data: parkings})
+            const parkings = await Parking.find(query).populate('ownerId')
+            return res.status(200).json({ data: parkings })
         } catch (error) {
             return res.status(500).json(error.message)
         }
     },
     manageRequest: async (req, res) => {
         try {
-            const pid = req.params.id
-            const {status} = req.body
+            const pid = req.params.id;
+            const { status } = req.body;
 
-            if(!['approved', 'rejected'].includes(status)){
-                return res.status(400).json({message: 'Trạng thái không hợp lệ'})
+            if (!['approved', 'rejected'].includes(status)) {
+                return res.status(400).json({ message: 'Trạng thái không hợp lệ' });
             }
 
-            const parking = await Parking.findById(pid)
-            if(!parking){
-                return res.status(404).json({message: 'Yêu cầu không tồn tại'})
+            const parking = await Parking.findById(pid);
+            if (!parking) {
+                return res.status(404).json({ message: 'Yêu cầu không tồn tại' });
             }
 
-            parking.status = status
-            await parking.save()
-
-            if(status === 'approved'){
-                await User.findByIdAndUpdate(parking.ownerId, {role: 'owner'})
+            if (parking.status === 'approved') {
+                return res.status(400).json({ message: 'Yêu cầu đã được duyệt trước đó' });
             }
 
-            return res.status(200).json({message: `Yêu cầu đã ${status === 'approved' ? 'được duyệt' : 'bị từ chối'}`, updatedStatus: parking.status})
+            if (parking.status === 'rejected') {
+                return res.status(400).json({ message: 'Yêu cầu đã bị từ chối trước đó' });
+            }
+
+            parking.status = status;
+            await parking.save();
+
+            if (status === 'approved') {
+                await User.findByIdAndUpdate(parking.ownerId, { role: 'owner' });
+            }
+
+            return res.status(200).json({
+                message: `Yêu cầu đã ${status === 'approved' ? 'được duyệt' : 'bị từ chối'}`,
+                updatedStatus: parking.status
+            });
         } catch (error) {
-            return res.status(500).json(error.message)
+            return res.status(500).json({ message: error.message });
         }
     },
     getParkingById: async (req, res) => {

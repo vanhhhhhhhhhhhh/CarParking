@@ -28,8 +28,7 @@
             android:exported="false" />
         <activity
             android:name=".activity.CreateParkingActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:exported="false" />
         <activity
             android:name=".activity.MapActivity"
             android:exported="false" />

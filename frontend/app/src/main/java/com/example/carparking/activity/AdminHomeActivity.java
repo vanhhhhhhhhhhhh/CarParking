@@ -14,8 +14,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
+import com.example.carparking.adapters.ParkingRequestAdapter;
+import com.example.carparking.api.ApiClient;
+import com.example.carparking.api.ParkingApiService;
+import com.example.carparking.model.Parking;
+import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.util.SharedPrefManager;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdminHomeActivity extends AppCompatActivity {
 
@@ -48,7 +59,7 @@ public class AdminHomeActivity extends AppCompatActivity {
 
         rvParkingRequests.setLayoutManager(new LinearLayoutManager(this));
 
-        // TODO: Load danh sách request từ API
+        loadPendingRequests();
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -60,9 +71,34 @@ public class AdminHomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return true;
-        } else {
-            return false;
         }
+        return false;
+    }
 
+    private void loadPendingRequests() {
+        String token = SharedPrefManager.getInstance(this).getToken();
+        ParkingApiService apiService = ApiClient.getClient(token).create(ParkingApiService.class);
+
+        Call<ResponseWrapper<List<Parking>>> call = apiService.getParkingList(
+                null, null, null, null
+        );
+
+        call.enqueue(new Callback<ResponseWrapper<List<Parking>>>() {
+            @Override
+            public void onResponse(Call<ResponseWrapper<List<Parking>>> call, Response<ResponseWrapper<List<Parking>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Parking> parkingList = response.body().data;
+                    ParkingRequestAdapter adapter = new ParkingRequestAdapter(AdminHomeActivity.this, parkingList);
+                    rvParkingRequests.setAdapter(adapter);
+                } else {
+                    Toast.makeText(AdminHomeActivity.this, "Không thể tải danh sách bãi đỗ", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseWrapper<List<Parking>>> call, Throwable t) {
+                Toast.makeText(AdminHomeActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

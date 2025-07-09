@@ -15,6 +15,15 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="24dp">
 
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:title="Đăng ký trở thành chủ bãi"
+            android:titleTextColor="@android:color/white"
+            android:navigationIcon="@drawable/ic_back" />
+
         <TextView
             android:text="Tạo bãi đỗ xe mới"
             android:textSize="22sp"
@@ -156,13 +165,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btnBackHome"
-            android:text="Quay về trang chủ"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="#9E9E9E"
-            android:textColor="@android:color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>
