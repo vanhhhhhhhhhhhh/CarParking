@@ -6,4 +6,8 @@ const uploadCloud = require('../controller/imageUpload')
 
 router.post('/create', middleware.verifyToken, uploadCloud.single('image'), parkingController.createParking)
 
+router.get('/list', parkingController.listParking)
+
+router.put('/request/:id', middleware.verifyToken, middleware.verifyAdmin, parkingController.manageRequest)
+
 module.exports = router

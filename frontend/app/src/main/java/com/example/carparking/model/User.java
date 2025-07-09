@@ -5,6 +5,7 @@ public class User {
     public String phone;
     public String password;
     public String confirmPassword;
+    public String role;
 
 
     public User() {
@@ -40,5 +41,13 @@ public class User {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

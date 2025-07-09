@@ -7,6 +7,7 @@ public class SharedPrefManager {
     private static final String PREF_NAME = "car_parking_prefs";
     private static final String KEY_TOKEN = "access_token";
     private static final String KEY_FULL_NAME = "full_name";
+    private static final String KEY_ROLE = "user_role";
 
     private static SharedPrefManager instance;
     private SharedPreferences sharedPreferences;
@@ -35,7 +36,7 @@ public class SharedPrefManager {
 
     public void clear() {
         editor.remove(KEY_TOKEN);
-        editor.remove(KEY_FULL_NAME); // xóa luôn fullName
+        editor.remove(KEY_FULL_NAME);
         editor.apply();
     }
 
@@ -50,5 +51,14 @@ public class SharedPrefManager {
 
     public String getFullName() {
         return sharedPreferences.getString(KEY_FULL_NAME, "");
+    }
+
+    public void saveRole(String role) {
+        editor.putString(KEY_ROLE, role);
+        editor.apply();
+    }
+
+    public String getRole() {
+        return sharedPreferences.getString(KEY_ROLE, "");
     }
 }

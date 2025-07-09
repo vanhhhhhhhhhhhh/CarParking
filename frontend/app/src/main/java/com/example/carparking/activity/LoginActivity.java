@@ -43,6 +43,11 @@ public class LoginActivity extends AppCompatActivity {
             String phone = etPhone.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
 
+            if (phone.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập đầy đủ số điện thoại và mật khẩu", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             User user = new User();
             user.phone = phone;
             user.password = password;
@@ -50,25 +55,38 @@ public class LoginActivity extends AppCompatActivity {
             api.login(user).enqueue(new Callback<ResponseWrapper<User>>() {
                 @Override
                 public void onResponse(Call<ResponseWrapper<User>> call, Response<ResponseWrapper<User>> response) {
-                    if (response.isSuccessful() && response.body().success) {
+                    if (response.isSuccessful() && response.body() != null && response.body().success) {
                         String token = response.body().accessToken;
-
                         User loggedInUser = response.body().user;
+
                         if (loggedInUser != null) {
                             String fullName = loggedInUser.fullName;
-                            SharedPrefManager.getInstance(LoginActivity.this).saveFullName(fullName);
+                            String role = loggedInUser.role;
+
+                            SharedPrefManager pref = SharedPrefManager.getInstance(LoginActivity.this);
+                            pref.saveToken(token);
+                            pref.saveFullName(fullName);
+                            pref.saveRole(role);
+
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+
+                            if ("admin".equals(role)) {
+                                startActivity(new Intent(LoginActivity.this, AdminHomeActivity.class));
+                            } else if ("owner".equals(role)) {
+                                Toast.makeText(LoginActivity.this, "Chào chủ bãi " + fullName, Toast.LENGTH_LONG).show();
+                            } else if ("user".equals(role)) {
+                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Vai trò không xác định", Toast.LENGTH_SHORT).show();
+                            }
+                            finish();
                         }
-
-                        SharedPrefManager.getInstance(LoginActivity.this).saveToken(token);
-
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                        finish();
-                    } else {
+                    } else if (response.body() != null) {
                         Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
                     }
                 }
-
 
                 @Override
                 public void onFailure(Call<ResponseWrapper<User>> call, Throwable t) {
