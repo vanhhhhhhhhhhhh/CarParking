@@ -19,7 +19,7 @@ public class Parking {
     public String status;
 
     @SerializedName("ownerId")
-    public String ownerId;
+    public User ownerId;
 
     public static class Location {
         public List<Double> coordinates;
@@ -114,11 +114,11 @@ public class Parking {
         this.status = status;
     }
 
-    public String getOwnerId() {
+    public User getOwner() {
         return ownerId;
     }
 
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(User owner) {
+        this.ownerId = owner;
     }
 }

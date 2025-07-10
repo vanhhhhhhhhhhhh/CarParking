@@ -11,44 +11,33 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
-import com.example.carparking.adapters.ParkingRequestAdapter;
-import com.example.carparking.api.ApiClient;
-import com.example.carparking.api.ParkingApiService;
-import com.example.carparking.model.Parking;
-import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.util.SharedPrefManager;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class AdminHomeActivity extends AppCompatActivity {
+public class OwnerHomeActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    private RecyclerView rvParkingRequests;
+    private ActionBarDrawerToggle toggle;
+    private RecyclerView rvBookingRequests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin_home);
+        setContentView(R.layout.activity_owner_home);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.toolbar);
-        rvParkingRequests = findViewById(R.id.rvParkingRequests);
+        rvBookingRequests = findViewById(R.id.rvBookingRequests);
 
         setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
@@ -66,9 +55,8 @@ public class AdminHomeActivity extends AppCompatActivity {
             tvHeader.setText("Xin chào khách");
         }
 
-        rvParkingRequests.setLayoutManager(new LinearLayoutManager(this));
-
-        loadPendingRequests();
+        // Load danh sách đơn đặt (tạm thời chưa implement)
+        // loadBookingRequests();
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -84,30 +72,11 @@ public class AdminHomeActivity extends AppCompatActivity {
         return false;
     }
 
-    private void loadPendingRequests() {
-        String token = SharedPrefManager.getInstance(this).getToken();
-        ParkingApiService apiService = ApiClient.getClient(token).create(ParkingApiService.class);
-
-        Call<ResponseWrapper<List<Parking>>> call = apiService.getParkingList(
-                null, null, null, null
-        );
-
-        call.enqueue(new Callback<ResponseWrapper<List<Parking>>>() {
-            @Override
-            public void onResponse(Call<ResponseWrapper<List<Parking>>> call, Response<ResponseWrapper<List<Parking>>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<Parking> parkingList = response.body().data;
-                    ParkingRequestAdapter adapter = new ParkingRequestAdapter(AdminHomeActivity.this, parkingList);
-                    rvParkingRequests.setAdapter(adapter);
-                } else {
-                    Toast.makeText(AdminHomeActivity.this, "Không thể tải danh sách bãi đỗ", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseWrapper<List<Parking>>> call, Throwable t) {
-                Toast.makeText(AdminHomeActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

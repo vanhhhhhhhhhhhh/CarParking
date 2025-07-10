@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                             if ("admin".equals(role)) {
                                 startActivity(new Intent(LoginActivity.this, AdminHomeActivity.class));
                             } else if ("owner".equals(role)) {
-                                Toast.makeText(LoginActivity.this, "Chào chủ bãi " + fullName, Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(LoginActivity.this, OwnerHomeActivity.class));
                             } else if ("user".equals(role)) {
                                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             } else {

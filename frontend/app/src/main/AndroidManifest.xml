@@ -16,11 +16,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarParking"
         tools:targetApi="31">
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".activity.AdminHomeActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CarParking.NoActionBar" />
+        <activity
+            android:name=".activity.OwnerHomeActivity"
             android:exported="false"
             android:theme="@style/Theme.CarParking.NoActionBar" />
         <activity
@@ -28,13 +34,10 @@
             android:exported="false" />
         <activity
             android:name=".activity.CreateParkingActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:exported="false" />
         <activity
             android:name=".activity.MapActivity"
-            android:exported="false" />
-
-        <!-- AUTHENTICATION -->
+            android:exported="false" /> <!-- AUTHENTICATION -->
         <activity
             android:name=".activity.LauncherActivity"
             android:exported="true"
@@ -48,8 +51,7 @@
         <activity
             android:name=".activity.HomeActivity"
             android:exported="false"
-            android:theme="@style/Theme.CarParking.NoActionBar" />
-        <!-- AUTHENTICATION -->
+            android:theme="@style/Theme.CarParking.NoActionBar" /> <!-- AUTHENTICATION -->
         <activity
             android:name=".activity.RegisterActivity"
             android:exported="false"

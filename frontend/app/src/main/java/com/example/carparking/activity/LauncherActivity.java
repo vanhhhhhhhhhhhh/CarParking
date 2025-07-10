@@ -22,7 +22,7 @@ public class LauncherActivity extends AppCompatActivity {
             if ("admin".equals(role)) {
                 startActivity(new Intent(this, AdminHomeActivity.class));
             } else if ("owner".equals(role)) {
-                startActivity(new Intent(this, HomeActivity.class));
+                startActivity(new Intent(this, OwnerHomeActivity.class));
             } else {
                 startActivity(new Intent(this, HomeActivity.class));
             }

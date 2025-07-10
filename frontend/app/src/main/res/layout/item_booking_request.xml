@@ -2,8 +2,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
     android:layout_marginHorizontal="12dp"
+    android:layout_marginBottom="12dp"
     android:elevation="4dp"
     android:radius="12dp">
 
@@ -14,45 +14,54 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/tvParkingName"
+            android:id="@+id/tvUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tên bãi: Bãi xe ABC"
+            android:text="Người dùng: Nguyễn Văn A"
             android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="#212121" />
 
         <TextView
-            android:id="@+id/tvParkingAddress"
+            android:id="@+id/tvParkingName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Địa chỉ: 123 Đường XYZ"
-            android:textColor="#555555"
-            android:paddingTop="4dp" />
+            android:text="Bãi đỗ: Bãi xe Trung Tâm"
+            android:paddingTop="4dp"
+            android:textColor="#555555" />
 
         <TextView
-            android:id="@+id/tvTotalSlots"
+            android:id="@+id/tvVehicleNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tổng số chỗ: 20"
-            android:textColor="#555555"
-            android:paddingTop="4dp" />
+            android:text="Biển số xe: 29A-123.45"
+            android:paddingTop="4dp"
+            android:textColor="#555555" />
 
         <TextView
-            android:id="@+id/tvPricePerHour"
+            android:id="@+id/tvTimeRange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Giá theo giờ: 10.000đ"
-            android:textColor="#555555"
-            android:paddingTop="4dp" />
+            android:text="Từ: 10:00 - 20/07/2025 đến 12:00 - 20/07/2025"
+            android:paddingTop="4dp"
+            android:textColor="#555555" />
 
         <TextView
-            android:id="@+id/tvOwnerId"
+            android:id="@+id/tvTotalPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Người gửi: Nguyễn Văn A"
-            android:textColor="#555555"
-            android:paddingTop="4dp" />
+            android:text="Tổng tiền: 30,000 VND"
+            android:paddingTop="4dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/tvBookingStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trạng thái: Chờ xác nhận"
+            android:paddingTop="4dp"
+            android:textColor="#FF9800"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,19 +71,19 @@
             android:layout_marginTop="12dp">
 
             <Button
-                android:id="@+id/btnApprove"
+                android:id="@+id/btnConfirm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Duyệt"
+                android:text="Xác nhận"
                 android:backgroundTint="@android:color/holo_green_dark"
                 android:textColor="@android:color/white"
                 android:layout_marginEnd="8dp" />
 
             <Button
-                android:id="@+id/btnReject"
+                android:id="@+id/btnCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Từ chối"
+                android:text="Hủy"
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:textColor="@android:color/white" />
         </LinearLayout>
