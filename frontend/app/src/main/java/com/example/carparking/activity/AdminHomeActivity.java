@@ -67,7 +67,6 @@ public class AdminHomeActivity extends AppCompatActivity {
         }
 
         rvParkingRequests.setLayoutManager(new LinearLayoutManager(this));
-
         loadPendingRequests();
     }
 

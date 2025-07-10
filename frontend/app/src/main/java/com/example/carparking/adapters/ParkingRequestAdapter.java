@@ -9,7 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
@@ -57,35 +56,19 @@ public class ParkingRequestAdapter extends RecyclerView.Adapter<ParkingRequestAd
                 (parking.getOwner() != null ? parking.getOwner().getFullName() : "Không xác định"));
 
         String status = parking.getStatus();
+        holder.tvStatus.setText("Trạng thái: " + getStatusText(status));
 
         if ("approved".equalsIgnoreCase(status) || "rejected".equalsIgnoreCase(status)) {
-            holder.btnApprove.setEnabled(false);
-            holder.btnReject.setEnabled(false);
-
-            holder.btnApprove.setText("Đã duyệt");
-            holder.btnReject.setText("Đã xử lý");
-
-            holder.btnApprove.setBackgroundTintList(
-                    ContextCompat.getColorStateList(context, android.R.color.darker_gray));
-            holder.btnReject.setBackgroundTintList(
-                    ContextCompat.getColorStateList(context, android.R.color.darker_gray));
+            holder.btnApprove.setVisibility(View.GONE);
+            holder.btnReject.setVisibility(View.GONE);
         } else {
-            holder.btnApprove.setEnabled(true);
-            holder.btnReject.setEnabled(true);
-
-            holder.btnApprove.setText("Duyệt");
-            holder.btnReject.setText("Từ chối");
-
-            holder.btnApprove.setBackgroundTintList(
-                    ContextCompat.getColorStateList(context, android.R.color.holo_green_dark));
-            holder.btnReject.setBackgroundTintList(
-                    ContextCompat.getColorStateList(context, android.R.color.holo_red_dark));
+            holder.btnApprove.setVisibility(View.VISIBLE);
+            holder.btnReject.setVisibility(View.VISIBLE);
 
             holder.btnApprove.setOnClickListener(v -> updateRequestStatus(parking.getId(), "approved", position));
             holder.btnReject.setOnClickListener(v -> updateRequestStatus(parking.getId(), "rejected", position));
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -93,7 +76,7 @@ public class ParkingRequestAdapter extends RecyclerView.Adapter<ParkingRequestAd
     }
 
     public static class ParkingViewHolder extends RecyclerView.ViewHolder {
-        TextView tvParkingName, tvParkingAddress, tvTotalSlots, tvPricePerHour, tvOwnerId;
+        TextView tvParkingName, tvParkingAddress, tvTotalSlots, tvPricePerHour, tvOwnerId, tvStatus;
         Button btnApprove, btnReject;
 
         public ParkingViewHolder(@NonNull View itemView) {
@@ -103,6 +86,7 @@ public class ParkingRequestAdapter extends RecyclerView.Adapter<ParkingRequestAd
             tvTotalSlots = itemView.findViewById(R.id.tvTotalSlots);
             tvPricePerHour = itemView.findViewById(R.id.tvPricePerHour);
             tvOwnerId = itemView.findViewById(R.id.tvOwnerId);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
             btnApprove = itemView.findViewById(R.id.btnApprove);
             btnReject = itemView.findViewById(R.id.btnReject);
         }
@@ -125,10 +109,10 @@ public class ParkingRequestAdapter extends RecyclerView.Adapter<ParkingRequestAd
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(context, "Yêu cầu đã được " + (status.equals("approved") ? "duyệt" : "từ chối"), Toast.LENGTH_SHORT).show();
-                    parkingList.remove(position);
-                    notifyItemRemoved(position);
+                    parkingList.get(position).setStatus(status);
+                    notifyItemChanged(position);
                 } else {
-                    Toast.makeText(context, "Không thể xử lý: trạng thái không hợp lệ hoặc đã xử lý trước đó", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Không thể xử lý: trạng thái không hợp lệ hoặc đã xử lý", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -137,5 +121,14 @@ public class ParkingRequestAdapter extends RecyclerView.Adapter<ParkingRequestAd
                 Toast.makeText(context, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private String getStatusText(String status) {
+        switch (status.toLowerCase()) {
+            case "approved": return "Đã duyệt";
+            case "rejected": return "Đã từ chối";
+            case "pending": return "Chờ xử lý";
+            default: return "Không xác định";
+        }
     }
 }

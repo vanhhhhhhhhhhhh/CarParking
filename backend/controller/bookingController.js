@@ -38,16 +38,16 @@ const calculateTotalPrice = (pricePerHour, startTime, endTime) => {
 
 function formatDate(date) {
     const pad2 = n => n.toString().padStart(2, '0');
-  
-    const hours   = pad2(date.getHours());
+
+    const hours = pad2(date.getHours());
     const minutes = pad2(date.getMinutes());
-    const day     = pad2(date.getDate());
-    const month   = pad2(date.getMonth() + 1);
-    const year    = date.getFullYear();
-  
+    const day = pad2(date.getDate());
+    const month = pad2(date.getMonth() + 1);
+    const year = date.getFullYear();
+
     return `${hours}:${minutes} - ${day}/${month}/${year}`;
-  }
-  
+}
+
 
 const bookingController = {
     createBooking: async (req, res) => {
@@ -135,7 +135,7 @@ const bookingController = {
             if (!parkingId || !startTime || !endTime) {
                 return res.status(400).json({ message: 'Vui lòng nhập đầy đủ các trường' });
             }
-           
+
             if (!isValidUnixMillisecond(startTime) || !isValidUnixMillisecond(endTime)) {
                 return res.status(400).json({ message: 'Thời gian không hợp lệ' });
             }
@@ -193,6 +193,44 @@ const bookingController = {
         }
     },
 
+    listBookingsByOwner: async (req, res) => {
+        try {
+            const ownerId = req.userId;
+
+            const parkingList = await Parking.find({ ownerId }).select('_id');
+            const parkingIds = parkingList.map(p => p._id);
+
+            const bookings = await Booking.find({ parkingId: { $in: parkingIds } })
+                .populate('userId', 'fullName phone')
+                .populate('parkingId', 'name address');
+
+            const formatDate = (date) => {
+                const d = new Date(date);
+                return d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) +
+                    ' - ' +
+                    d.toLocaleDateString('vi-VN');
+            };
+
+            const data = bookings.map(b => ({
+                id: b._id,
+                userName: b.userId.fullName,
+                userPhone: b.userId.phone,
+                parkingName: b.parkingId.name,
+                address: b.parkingId.address,
+                vehicleNumber: b.vehicleNumber,
+                startTime: formatDate(b.startTime),
+                endTime: formatDate(b.endTime),
+                totalPrice: b.totalPrice,
+                status: b.status,
+            }));
+
+            return res.status(200).json({ data });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Lỗi server' });
+        }
+    },
+
     cancelBooking: async (req, res) => {
         try {
             const { id } = req.params
@@ -216,6 +254,34 @@ const bookingController = {
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Lỗi server' })
+        }
+    },
+
+    confirmBooking: async (req, res) => {
+        try {
+            const { id } = req.params
+            const booking = await Booking.findById(id)
+            if (!booking) {
+                return res.status(404).json({ message: 'Đặt chỗ không tồn tại' })
+            }
+
+            if (booking.status !== 'pending') {
+                return res.status(400).json({ message: 'Không thể xác nhận đặt chỗ đã hủy' })
+            }
+
+            const parking = await Parking.findById(booking.parkingId)
+            if (!parking || parking.availableSlots <= 0) {
+                return res.status(400).json({ message: 'Bãi đỗ đã đầy, không thể xác nhận' })
+            }
+
+            booking.status = 'confirmed'
+            await booking.save()
+
+            await Parking.findByIdAndUpdate(booking.parkingId, { $inc: { availableSlots: -1 } })
+
+            return res.status(200).json({ message: 'Xác nhận đặt chỗ thành công' })
+        } catch (error) {
+            return res.status(500).json(error.message)
         }
     }
 }
