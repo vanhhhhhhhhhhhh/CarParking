@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginBottom="12dp"
+    android:elevation="4dp"
+    android:radius="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Người dùng: Nguyễn Văn A"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#212121" />
+
+        <TextView
+            android:id="@+id/tvParkingName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bãi đỗ: Bãi xe Trung Tâm"
+            android:paddingTop="4dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/tvVehicleNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Biển số xe: 29A-123.45"
+            android:paddingTop="4dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/tvTimeRange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Từ: 10:00 - 20/07/2025 đến 12:00 - 20/07/2025"
+            android:paddingTop="4dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/tvTotalPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tổng tiền: 30,000 VND"
+            android:paddingTop="4dp"
+            android:textColor="#555555" />
+
+        <TextView
+            android:id="@+id/tvBookingStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trạng thái: Chờ xác nhận"
+            android:paddingTop="4dp"
+            android:textColor="#FF9800"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="12dp">
+
+            <Button
+                android:id="@+id/btnConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xác nhận"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hủy"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

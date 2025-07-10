@@ -37,6 +37,7 @@ public class SharedPrefManager {
     public void clear() {
         editor.remove(KEY_TOKEN);
         editor.remove(KEY_FULL_NAME);
+        editor.remove(KEY_ROLE);
         editor.apply();
     }
 
