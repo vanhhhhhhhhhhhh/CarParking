@@ -11,11 +11,23 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
+import com.example.carparking.adapters.OwnerBookingAdapter;
+import com.example.carparking.api.ApiClient;
+import com.example.carparking.api.OwnerBookingApiService;
+import com.example.carparking.model.BookingListing;
+import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.util.SharedPrefManager;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OwnerHomeActivity extends AppCompatActivity {
 
@@ -24,6 +36,8 @@ public class OwnerHomeActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ActionBarDrawerToggle toggle;
     private RecyclerView rvBookingRequests;
+    private OwnerBookingApiService ownerBookingApi;
+    private List<BookingListing> bookings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +48,8 @@ public class OwnerHomeActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.toolbar);
         rvBookingRequests = findViewById(R.id.rvBookingRequests);
+        rvBookingRequests.setLayoutManager(new LinearLayoutManager(this));
+
 
         setSupportActionBar(toolbar);
 
@@ -55,8 +71,8 @@ public class OwnerHomeActivity extends AppCompatActivity {
             tvHeader.setText("Xin chào khách");
         }
 
-        // Load danh sách đơn đặt (tạm thời chưa implement)
-        // loadBookingRequests();
+        loadBookingRequests();
+
     }
 
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -78,5 +94,33 @@ public class OwnerHomeActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadBookingRequests() {
+        ownerBookingApi = ApiClient.getClient(SharedPrefManager.getInstance(this).getToken())
+                .create(OwnerBookingApiService.class);
+
+        ownerBookingApi.getAllBookingRequests().enqueue(new Callback<ResponseWrapper<List<BookingListing>>>() {
+            @Override
+            public void onResponse(Call<ResponseWrapper<List<BookingListing>>> call, Response<ResponseWrapper<List<BookingListing>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    bookings = response.body().data;
+                    OwnerBookingAdapter adapter = new OwnerBookingAdapter(
+                            OwnerHomeActivity.this,
+                            bookings,
+                            ownerBookingApi,
+                            OwnerHomeActivity.this::loadBookingRequests
+                    );
+                    rvBookingRequests.setAdapter(adapter);
+                } else {
+                    Toast.makeText(OwnerHomeActivity.this, "Không thể tải danh sách", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseWrapper<List<BookingListing>>> call, Throwable t) {
+                Toast.makeText(OwnerHomeActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

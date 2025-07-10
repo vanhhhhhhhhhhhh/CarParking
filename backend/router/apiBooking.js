@@ -8,6 +8,10 @@ router.get('/list', middleware.verifyToken, bookingController.listBookings)
 
 router.post('/calculate-price', middleware.verifyToken, bookingController.calculatePrice)
 
+router.get('/listByOwner', middleware.verifyToken, bookingController.listBookingsByOwner)
+
 router.put('/cancel/:id', middleware.verifyToken, bookingController.cancelBooking)
+
+router.put('/confirm/:id', middleware.verifyToken, bookingController.confirmBooking)
 
 module.exports = router

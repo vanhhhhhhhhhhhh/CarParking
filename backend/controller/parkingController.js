@@ -158,7 +158,7 @@ const parkingController = {
     getParkingById: async (req, res) => {
         try {
             const pid = req.params.id
-            const parking = await Parking.findById(pid)
+            const parking = await Parking.findById(pid).populate('ownerId');
             if (!parking) {
                 return res.status(404).json({ message: 'Bãi đỗ xe không tồn tại' });
             }
