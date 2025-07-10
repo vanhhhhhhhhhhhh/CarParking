@@ -95,4 +95,6 @@
     <string name="yes">Có</string>
     <string name="no">Không</string>
     <string name="error_creating_booking">Có lỗi xảy ra khi tạo booking</string>
+    <string name="no_nearby_parkings">Không có điểm đỗ nào gần khu vực đó</string>
+    <string name="nearby_parkings">Bãi đỗ gần đó</string>
 </resources>

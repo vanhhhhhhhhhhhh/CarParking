@@ -1,5 +1,6 @@
 package com.example.carparking.adapters;
 
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
 import com.example.carparking.model.SearchResult;
+import com.example.carparking.util.StringUtils;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
@@ -20,6 +23,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public interface OnSearchItemSelectedListener {
         void onSearchItemSelected(SearchResult searchResult);
     }
+
+    private LatLng referenceLocation;
 
     private List<SearchResult> searchResults = new ArrayList<>();
     private OnSearchItemSelectedListener onSearchItemSelectedListener;
@@ -33,6 +38,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         notifyDataSetChanged();
     }
 
+    public void setReferenceLocation(LatLng location) {
+        this.referenceLocation = location;
+    }
+
     @NonNull
     @Override
     public SearchResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,7 +53,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     @Override
     public void onBindViewHolder(@NonNull SearchResultViewHolder holder, int position) {
         SearchResult result = searchResults.get(position);
-        holder.bind(result);
+        holder.bind(result, referenceLocation);
     }
 
     @Override
@@ -56,6 +65,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         private final ImageView ivIcon;
         private final MaterialTextView tvTitle;
         private final MaterialTextView tvSubtitle;
+        private final MaterialTextView tvDistance;
         private final View divider;
 
         public SearchResultViewHolder(@NonNull View itemView) {
@@ -63,6 +73,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             ivIcon = itemView.findViewById(R.id.iv_icon);
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvSubtitle = itemView.findViewById(R.id.tv_subtitle);
+            tvDistance = itemView.findViewById(R.id.tv_subtitle_distance);
             divider = itemView.findViewById(R.id.divider);
 
             itemView.setOnClickListener(v -> {
@@ -73,9 +84,23 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             });
         }
 
-        public void bind(SearchResult result) {
+        public void bind(SearchResult result, LatLng referenceLocation) {
             tvTitle.setText(result.getTitle());
             tvSubtitle.setText(result.getSubtitle());
+
+            if (referenceLocation != null) {
+                float[] results = new float[1];
+                Location.distanceBetween(
+                        referenceLocation.latitude, referenceLocation.longitude,
+                        result.getLatitude(), result.getLongitude(),
+                        results);
+
+                float distanceInMeters = results[0];
+                tvDistance.setVisibility(View.VISIBLE);
+                tvDistance.setText(StringUtils.formatDistance(distanceInMeters));
+            } else {
+                tvDistance.setVisibility(View.GONE);
+            }
 
             // Set appropriate icon based on result type
             if (result.getType() == SearchResult.SearchResultType.PARKING_LOCATION) {

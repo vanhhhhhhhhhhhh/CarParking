@@ -46,4 +46,7 @@ const parkingSchema = mongoose.Schema({
     }
 }, { timestamps: true })
 
+
+parkingSchema.index({ location: '2dsphere' })
+
 module.exports = mongoose.model('parkings', parkingSchema)

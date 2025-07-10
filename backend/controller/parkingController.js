@@ -114,6 +114,7 @@ const parkingController = {
             const parkings = await Parking.find(query)
             return res.status(200).json({data: parkings})
         } catch (error) {
+            console.error('Error in listParking:', error);
             return res.status(500).json(error.message)
         }
     },

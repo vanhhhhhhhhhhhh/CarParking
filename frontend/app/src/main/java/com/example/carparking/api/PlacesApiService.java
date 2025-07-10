@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.carparking.model.SearchResult;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
@@ -25,6 +26,11 @@ public class PlacesApiService {
 
     public interface PlacesCallback {
         void onSuccess(List<SearchResult> results);
+        void onError(String error);
+    }
+
+    public interface PlaceDetailsCallback {
+        void onSuccess(LatLng result);
         void onError(String error);
     }
 
@@ -54,11 +60,12 @@ public class PlacesApiService {
             for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
                 prediction.getSecondaryText(null);
                 SearchResult result = new SearchResult(
-                    prediction.getPlaceId(),
+                    null,
                     prediction.getPrimaryText(null).toString(),
                         prediction.getSecondaryText(null).toString(),
                     SearchResult.SearchResultType.BUILDING
                 );
+                result.setPlaceId(prediction.getPlaceId());
                 searchResults.add(result);
             }
 
@@ -71,6 +78,35 @@ public class PlacesApiService {
             } else {
                 Log.e(TAG, "Error searching places", exception);
                 callback.onError("Error searching places: " + exception.getMessage());
+            }
+        });
+    }
+
+    public void getPlaceLocation(String placeId, PlaceDetailsCallback callback) {
+        if (placeId == null || placeId.trim().isEmpty()) {
+            callback.onError("Invalid Place ID");
+            return;
+        }
+
+        List<Place.Field> placeFields = List.of(Place.Field.LOCATION);
+        FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
+
+        placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+            Place place = response.getPlace();
+            LatLng latLng = place.getLocation();
+            if (latLng != null) {
+                callback.onSuccess(latLng);
+            } else {
+                callback.onError("Location not found for the place");
+            }
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+                Log.e(TAG, "Place not found: " + apiException.getStatusCode());
+                callback.onError("Failed to fetch place: " + apiException.getMessage());
+            } else {
+                Log.e(TAG, "Error fetching place", exception);
+                callback.onError("Error fetching place: " + exception.getMessage());
             }
         });
     }

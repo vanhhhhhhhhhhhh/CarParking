@@ -3,16 +3,23 @@ package com.example.carparking.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carparking.R;
+import com.example.carparking.adapters.SearchResultAdapter;
 import com.example.carparking.api.ApiClient;
 import com.example.carparking.api.ParkingApiService;
 import com.example.carparking.api.PlacesApiService;
@@ -23,6 +30,8 @@ import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.model.SearchResult;
 import com.example.carparking.util.Debouncer;
 import com.example.carparking.util.SharedPrefManager;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +48,11 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
     private SearchFragment searchFragment;
     private MapsFragment mapsFragment;
     List<SearchResult> searchResults = new ArrayList<>();
+
+    private FrameLayout nearbyBottomSheetContainer;
+    private RecyclerView nearbyRecyclerView;
+    private SearchResultAdapter nearbyPlacesAdapter;
+    private BottomSheetBehavior<FrameLayout> nearbyBottomSheetBehavior;
 
 
     @Override
@@ -58,9 +72,66 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
             actionBar.setTitle(R.string.parking_title);
         }
 
+        setupBottomSheet();
         setupSearchFragment();
         setUpMapFragment();
         loadParkings();
+    }
+
+    private void setupBottomSheet() {
+        nearbyBottomSheetContainer = findViewById(R.id.nearbyPlacesContainer);
+        nearbyRecyclerView = findViewById(R.id.nearbyPlacesRecyclerView);
+        nearbyBottomSheetBehavior = BottomSheetBehavior.from(nearbyBottomSheetContainer);
+        nearbyBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        nearbyBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                float offset = Math.min(1, slideOffset + 1);
+                int padding = (int) (nearbyBottomSheetBehavior.getPeekHeight() * offset);
+                mapsFragment.setPaddingBottom(padding);
+            }
+        });
+
+        nearbyPlacesAdapter = new SearchResultAdapter(this::openParkingDetails);
+        nearbyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        nearbyRecyclerView.setAdapter(nearbyPlacesAdapter);
+    }
+
+    private void searchNearbyParkings(double latitude, double longitude) {
+        parkingApiService.getParkingList(null, latitude, longitude, null).enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<ResponseWrapper<List<Parking>>> call, Response<ResponseWrapper<List<Parking>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Parking> parkingList = response.body().data;
+                    List<SearchResult> nearbySearchResults = new ArrayList<>();
+                    if (parkingList != null && !parkingList.isEmpty()) {
+                        for (Parking parking : parkingList) {
+                            SearchResult searchResult = getSearchResult(parking);
+                            nearbySearchResults.add(searchResult);
+                        }
+
+                        nearbyPlacesAdapter.setReferenceLocation(new LatLng(latitude, longitude));
+                        nearbyPlacesAdapter.setSearchResults(nearbySearchResults);
+                        nearbyBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    } else {
+                        Toast.makeText(MapActivity.this, getString(R.string.no_nearby_parkings), Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "No nearby parking results found");
+                    }
+                } else {
+                    Log.e(TAG, "Failed to fetch nearby parking results: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseWrapper<List<Parking>>> call, Throwable t) {
+                Toast.makeText(MapActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void loadParkings() {
@@ -133,15 +204,7 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
 
                     if (parkingList != null && !parkingList.isEmpty()) {
                         for (Parking parking : parkingList) {
-                            SearchResult searchResult = new SearchResult(
-                                    parking.getId(),
-                                    parking.getName(),
-                                    parking.getAddress(),
-                                    SearchResult.SearchResultType.PARKING_LOCATION
-                            );
-                            searchResult.setLatitude(parking.getLocation().coordinates.get(1));
-                            searchResult.setLongitude(parking.getLocation().coordinates.get(0));
-
+                            SearchResult searchResult = getSearchResult(parking);
                             searchResults.add(0, searchResult);
                         }
                     } else {
@@ -157,6 +220,19 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
                 Toast.makeText(MapActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @NonNull
+    private static SearchResult getSearchResult(Parking parking) {
+        SearchResult searchResult = new SearchResult(
+                parking.getId(),
+                parking.getName(),
+                parking.getAddress(),
+                SearchResult.SearchResultType.PARKING_LOCATION
+        );
+        searchResult.setLatitude(parking.getLocation().coordinates.get(1));
+        searchResult.setLongitude(parking.getLocation().coordinates.get(0));
+        return searchResult;
     }
 
     private void performSearch(String query) {
@@ -206,7 +282,17 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
     }
 
     private void openBuildingDetails(SearchResult result) {
+        placesApiService.getPlaceLocation(result.getPlaceId(), new PlacesApiService.PlaceDetailsCallback() {
+            @Override
+            public void onSuccess(LatLng result) {
+                searchNearbyParkings(result.latitude, result.longitude);
+            }
 
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Error fetching place location: " + error);
+            }
+        });
     }
 
     @Override
@@ -219,7 +305,6 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
     public void onParkingClick(Parking parking) {
         Intent intent = new Intent(this, BookingActivity.class);
         intent.putExtra("parkingId", parking.getId());
-
         startActivity(intent);
     }
 }

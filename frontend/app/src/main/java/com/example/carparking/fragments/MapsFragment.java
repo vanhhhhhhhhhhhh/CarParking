@@ -36,10 +36,29 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
 public class MapsFragment extends Fragment {
+
+    int origMarginBottom = 0;
+    int origMarginRight = 0;
+
+
+    public void setPaddingBottom(int height) {
+        View view = getView();
+        if (view == null) return;
+        FloatingActionButton button = view.findViewById(R.id.floatingActionButton);
+        if (button != null) {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) button.getLayoutParams();
+            params.setMargins(0, 0, origMarginRight, origMarginBottom + height);
+        }
+
+        if (googleMap != null) {
+            googleMap.setPadding(0, 0, 0, height);
+        }
+    }
 
     public interface OnParkingClickListener {
         void onParkingClick(Parking parking);
@@ -119,7 +138,13 @@ public class MapsFragment extends Fragment {
             mapFragment.getMapAsync(callback);
         }
 
-        view.findViewById(R.id.floatingActionButton).setOnClickListener(v -> focusOnMyLocation());
+        FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
+        if (floatingActionButton != null) {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) floatingActionButton.getLayoutParams();
+            origMarginBottom = params.bottomMargin;
+            origMarginRight = params.rightMargin;
+            floatingActionButton.setOnClickListener(v -> focusOnMyLocation());
+        }
     }
 
     @SuppressWarnings("MissingPermission")

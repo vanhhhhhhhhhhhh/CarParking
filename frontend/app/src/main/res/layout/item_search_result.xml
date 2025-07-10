@@ -48,6 +48,17 @@
                 android:maxLines="1"
                 android:ellipsize="end" />
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_subtitle_distance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/sample_subtitle"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:visibility="gone" />
+
         </LinearLayout>
 
     </LinearLayout>
