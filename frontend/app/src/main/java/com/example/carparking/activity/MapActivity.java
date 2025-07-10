@@ -1,5 +1,7 @@
 package com.example.carparking.activity;
 
+import static com.google.android.material.bottomsheet.BottomSheetBehavior.SAVE_ALL;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,7 +62,7 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_map);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mapsContentContainer), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -86,7 +88,9 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
         nearbyBottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    mapsFragment.setPaddingBottom(0);
+                }
             }
 
             @Override

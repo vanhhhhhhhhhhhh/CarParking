@@ -7,29 +7,34 @@
     android:layout_height="match_parent"
     tools:context=".activity.MapActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
+        android:id="@+id/mapsContentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mapsFragmentContainer2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:layout_anchorGravity="start|top" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/overlayFragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            app:layout_anchorGravity="start|top" />
+    </FrameLayout>
 
 
     <FrameLayout
         android:id="@+id/nearbyPlacesContainer"
         style="@style/Widget.Material3.BottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="400dp"
+        android:elevation="8dp"
+        app:layout_anchorGravity="bottom|left"
         app:behavior_peekHeight="90dp"
-        android:elevation="4dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
@@ -39,7 +44,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -55,9 +60,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/nearbyPlacesRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/item_search_result"
-                android:layout_weight="1" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                tools:listitem="@layout/item_search_result" />
         </LinearLayout>
 
     </FrameLayout>
