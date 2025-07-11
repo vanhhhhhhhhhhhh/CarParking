@@ -6,22 +6,25 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true"
         android:layout_height="match_parent">
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            android:title="Quản lý yêu cầu bãi đỗ"
-            android:titleTextColor="@android:color/white" />
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="Quản lý yêu cầu bãi đỗ"
+            app:titleTextColor="@android:color/white" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvParkingRequests"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:padding="12dp"
             android:clipToPadding="false"/>
     </LinearLayout>
@@ -31,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:fitsSystemWindows="true"
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/menu_admin" />
 </androidx.drawerlayout.widget.DrawerLayout>
