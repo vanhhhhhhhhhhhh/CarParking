@@ -28,6 +28,7 @@ const checkOverLap = async (startTimeDate, endTimeDate, parkingId) => {
 
 const ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000
 const ONE_HOUR_IN_MILLISECONDS = 3600 * 1000
+const FIFTEEN_MINUTES_IN_MILLISECONDS = 15 * 60 * 1000
 const TWO_DAYS_IN_MILLISECONDS = 48 * ONE_HOUR_IN_MILLISECONDS
 const ROUND_FACTOR = 1000
 
@@ -83,8 +84,8 @@ const bookingController = {
 
             const durationInMilliseconds = endTime - startTime
 
-            if (durationInMilliseconds < ONE_HOUR_IN_MILLISECONDS) {
-                return res.status(400).json({ message: 'Thời gian đặt chỗ phải lớn hơn hoặc bằng 1 giờ' });
+            if (durationInMilliseconds < FIFTEEN_MINUTES_IN_MILLISECONDS) {
+                return res.status(400).json({ message: 'Thời gian đặt chỗ phải lớn hơn hoặc bằng 15 phút' });
             }
 
             if (durationInMilliseconds > TWO_DAYS_IN_MILLISECONDS) {
@@ -147,8 +148,8 @@ const bookingController = {
 
             const durationInMilliseconds = parseInt(endTime) - parseInt(startTime);
 
-            if (durationInMilliseconds < ONE_HOUR_IN_MILLISECONDS) {
-                return res.status(400).json({ message: 'Thời gian đặt chỗ phải lớn hơn hoặc bằng 1 giờ' });
+            if (durationInMilliseconds < FIFTEEN_MINUTES_IN_MILLISECONDS) {
+                return res.status(400).json({ message: 'Thời gian đặt chỗ phải lớn hơn hoặc bằng 15 phút' });
             }
 
             if (durationInMilliseconds > TWO_DAYS_IN_MILLISECONDS) {
