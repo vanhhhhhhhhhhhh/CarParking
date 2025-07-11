@@ -10,7 +10,9 @@ router.post('/calculate-price', middleware.verifyToken, bookingController.calcul
 
 router.get('/listByOwner', middleware.verifyToken, bookingController.listBookingsByOwner)
 
-router.put('/cancel/:id', middleware.verifyToken, bookingController.cancelBooking)
+router.get('/:id', middleware.verifyToken, bookingController.getBookingById)
+
+router.put('/:id/cancel', middleware.verifyToken, bookingController.cancelBooking)
 
 router.put('/confirm/:id', middleware.verifyToken, bookingController.confirmBooking)
 

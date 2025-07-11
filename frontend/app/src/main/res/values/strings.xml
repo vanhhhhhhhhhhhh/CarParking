@@ -97,4 +97,12 @@
     <string name="error_creating_booking">Có lỗi xảy ra khi tạo booking</string>
     <string name="no_nearby_parkings">Không có điểm đỗ nào gần khu vực đó</string>
     <string name="nearby_parkings">Bãi đỗ gần đó</string>
+    <string name="selected_booking_time">Thời gian đã chọn</string>
+    <string name="selected_license_plate">Biển số đã chọn</string>
+    <string name="cancel_book_now">Hủy đặt chỗ</string>
+    <string name="booking_detail_title">Chi tiết đặt chỗ</string>
+    <string name="error_cancelling_booking">Có lỗi xảy ra khi hủy booking</string>
+    <string name="confirm_cancel_booking_title">Bạn có muốn hủy đặt chỗ?</string>
+    <string name="confirm_cancel_booking_message">Bạn có thực sự muốn hủy đặt chỗ này?</string>
+    <string name="cancel_booking_success">Hủy đặt chỗ thành công</string>
 </resources>

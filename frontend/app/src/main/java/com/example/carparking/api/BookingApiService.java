@@ -11,6 +11,8 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface BookingApiService {
@@ -22,6 +24,12 @@ public interface BookingApiService {
 
     @POST("booking/create")
     Call<ResponseWrapper<Booking>> createBooking(@Body BookingBody bookingInfo);
+
+    @GET("booking/{id}")
+    Call<ResponseWrapper<Booking>> getBookingDetails(@Path("id") String bookingId);
+
+    @PUT("booking/{id}/cancel")
+    Call<ResponseWrapper<Void>> cancelBooking(@Path("id") String bookingId);
 
     @POST("booking/calculate-price")
     Call<ResponseWrapper<Integer>> calculatePrice(@Body BookingBody bookingInfo);

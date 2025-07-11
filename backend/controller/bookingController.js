@@ -176,7 +176,7 @@ const bookingController = {
             query.startTime = { $lte: new Date(parseInt(req.query.endDate)) }
             query.endTime = { $gte: new Date(parseInt(req.query.startDate)) }
 
-            const bookings = await Booking.find(query).populate('parkingId')
+            const bookings = await Booking.find(query).populate('parkingId').sort({ startTime: -1 });
             const mappedBookings = bookings.map(b => ({
                 id: b._id,
                 totalPrice: b.totalPrice,
@@ -231,10 +231,25 @@ const bookingController = {
         }
     },
 
+    getBookingById: async (req, res) => {
+        try {
+            const { id } = req.params
+            const booking = await Booking.findOne({ _id: id, userId: req.userId })
+
+            if (!booking) {
+                return res.status(404).json({ message: 'Đặt chỗ không tồn tại' });
+            }
+
+            return res.status(200).json({ data: booking });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Lỗi server' });
+        }
+    },
     cancelBooking: async (req, res) => {
         try {
             const { id } = req.params
-            const booking = await Booking.findById(id)
+            const booking = await Booking.findOne({ _id: id, userId: req.userId })
             if (!booking) {
                 return res.status(400).json({ message: 'Đặt chỗ không tồn tại' });
             }

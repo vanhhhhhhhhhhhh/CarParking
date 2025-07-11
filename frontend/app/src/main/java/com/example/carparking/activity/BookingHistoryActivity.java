@@ -4,6 +4,7 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -11,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,6 +56,7 @@ public class BookingHistoryActivity extends AppCompatActivity
     private Long endDateUnixMs;
     private BookingApiService bookingApiService;
     private DateRangeFragment dateRangeFragment;
+    private ActivityResultLauncher<Intent> launchDetailActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +79,22 @@ public class BookingHistoryActivity extends AppCompatActivity
         }
 
         initViews();
+        setUpResultLauncher();
         setupRecyclerView();
+    }
+
+    private void setUpResultLauncher() {
+        launchDetailActivity = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Intent data = result.getData();
+                    if (result.getResultCode() != RESULT_OK) return;
+                    if (data == null) return;
+
+                    boolean shouldReload = data.getBooleanExtra("shouldReload", false);
+                    if (shouldReload) {
+                        loadData();
+                    }
+                });
     }
 
     @Override
@@ -110,7 +130,9 @@ public class BookingHistoryActivity extends AppCompatActivity
         recyclerViewBookings.setAdapter(bookingAdapter);
 
         bookingAdapter.setOnBookingClickListener(booking -> {
-            Toast.makeText(this, "Viewing details for: " + booking.getAddress(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, BookingDetailActivity.class);
+            intent.putExtra("bookingId", booking.getId());
+            launchDetailActivity.launch(intent);
         });
     }
 

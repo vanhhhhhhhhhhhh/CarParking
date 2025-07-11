@@ -16,6 +16,19 @@ public class Booking {
     private String vehicleNumber;
     private Date startTime;
     private Date endTime;
+    private double totalPrice;
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public int getTotalPriceInt() {
+        return (int) totalPrice;
+    }
 
     public String getId() {
         return id;

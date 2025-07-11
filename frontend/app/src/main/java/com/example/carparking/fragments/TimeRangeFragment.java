@@ -23,6 +23,8 @@ import java.util.Locale;
 
 public class TimeRangeFragment extends Fragment {
 
+
+
     public interface OnTimeRangeSelectedListener {
         void onTimeRangeSelected(Date startTime, Date endTime);
     }
@@ -165,6 +167,15 @@ public class TimeRangeFragment extends Fragment {
 
     private String formatDateTime(Date date) {
         return DateUtils.formatDateTime(date);
+    }
+
+    public void setEnabled(boolean isEnabled) {
+        if (startTimeInputLayout != null && endTimeInputLayout != null) {
+            startTimeInputLayout.setEnabled(isEnabled);
+            endTimeInputLayout.setEnabled(isEnabled);
+            startTimeEditText.setEnabled(isEnabled);
+            endTimeEditText.setEnabled(isEnabled);
+        }
     }
 
     public void setStartTime(Date startTime) {
