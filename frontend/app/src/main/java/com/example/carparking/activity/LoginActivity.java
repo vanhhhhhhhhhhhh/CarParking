@@ -14,6 +14,7 @@ import com.example.carparking.api.ApiClient;
 import com.example.carparking.api.AuthApiService;
 import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.model.User;
+import com.example.carparking.util.ErrorUtils;
 import com.example.carparking.util.SharedPrefManager;
 
 import retrofit2.Call;
@@ -51,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
             User user = new User();
             user.phone = phone;
             user.password = password;
+            btnLogin.setEnabled(false);
+            btnLogin.setText("Đang đăng nhập...");
 
             api.login(user).enqueue(new Callback<ResponseWrapper<User>>() {
                 @Override
@@ -84,12 +87,17 @@ public class LoginActivity extends AppCompatActivity {
                     } else if (response.body() != null) {
                         Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại: " + ErrorUtils.getErrorFromApi(response.errorBody()), Toast.LENGTH_SHORT).show();
                     }
+
+                    btnLogin.setEnabled(true);
+                    btnLogin.setText("Đăng nhập");
                 }
 
                 @Override
                 public void onFailure(Call<ResponseWrapper<User>> call, Throwable t) {
+                    btnLogin.setEnabled(true);
+                    btnLogin.setText("Đăng nhập");
                     Toast.makeText(LoginActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });

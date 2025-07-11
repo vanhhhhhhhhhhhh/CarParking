@@ -1,5 +1,10 @@
 package com.example.carparking.fragments;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -7,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +52,8 @@ public class SearchFragment extends Fragment {
             etSearch.setText(searchResult.getTitle());
             etSearch.clearFocus();
             cvSearchResults.setVisibility(View.GONE);
+            hideSoftKeyBoard();
+
             callback.onSearchItemSelected(searchResult);
         };
 
@@ -53,6 +61,16 @@ public class SearchFragment extends Fragment {
             adapter = new SearchResultAdapter(onSearchItemSelectedCallback);
             rvSearchResults.setAdapter(adapter);
             adapter.setSearchResults(searchResults);
+        }
+    }
+
+    private void hideSoftKeyBoard() {
+        Context context = getContext();
+        if (context == null) return;
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
+
+        if(imm != null && imm.isAcceptingText()) {
+            imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
         }
     }
 

@@ -105,4 +105,13 @@
     <string name="confirm_cancel_booking_title">Bạn có muốn hủy đặt chỗ?</string>
     <string name="confirm_cancel_booking_message">Bạn có thực sự muốn hủy đặt chỗ này?</string>
     <string name="cancel_booking_success">Hủy đặt chỗ thành công</string>
+
+    <!-- Booking validation messages -->
+    <string name="booking_validation_error_title">Lỗi đặt chỗ</string>
+    <string name="booking_validation_license_plate_missing">Vui lòng chọn biển số</string>
+    <string name="booking_validation_start_time_missing">Vui lòng chọn giờ bắt đầu</string>
+    <string name="booking_validation_end_time_missing">Vui lòng chọn giờ kết thúc</string>
+    <string name="booking_validation_time_order_invalid">Giờ bắt đầu phải trước giờ kết thúc</string>
+    <string name="booking_validation_all_fields_required">Vui lòng điền đầy đủ thông tin bắt buộc: biển số, giờ bắt đầu và giờ kết thúc</string>
+    <string name="ok">Đồng ý</string>
 </resources>

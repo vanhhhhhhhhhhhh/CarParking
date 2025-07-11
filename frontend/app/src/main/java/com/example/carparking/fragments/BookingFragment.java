@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -117,12 +118,15 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
         });
 
         bookButton.setOnClickListener(v -> {
-            if (bookingListener != null && isValidBooking()) {
+            String validationError = getBookingValidationError();
+            if (validationError == null && bookingListener != null) {
                 bookingListener.onBookingClicked(
                     selectedLicensePlate, 
                     selectedStartTime,
                     selectedEndTime
                 );
+            } else if (validationError != null) {
+                showValidationErrorDialog(validationError);
             }
         });
 
@@ -211,12 +215,6 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
         totalPrice.setText(formattedPrice);
     }
 
-    private boolean isValidBooking() {
-        return selectedLicensePlate != null && 
-               selectedStartTime != null &&
-                selectedEndTime != null;
-    }
-
     public void setBookingListener(OnBookingActionListener listener) {
         this.bookingListener = listener;
     }
@@ -225,5 +223,29 @@ public class BookingFragment extends Fragment implements TimeRangeFragment.OnTim
     public void onDetach() {
         super.onDetach();
         bookingListener = null;
+    }
+
+    private String getBookingValidationError() {
+        if (selectedLicensePlate == null) {
+            return getString(R.string.booking_validation_license_plate_missing);
+        }
+        if (selectedStartTime == null) {
+            return getString(R.string.booking_validation_start_time_missing);
+        }
+        if (selectedEndTime == null) {
+            return getString(R.string.booking_validation_end_time_missing);
+        }
+        if (selectedStartTime.after(selectedEndTime)) {
+            return getString(R.string.booking_validation_time_order_invalid);
+        }
+        return null;
+    }
+
+    private void showValidationErrorDialog(String message) {
+        new AlertDialog.Builder(getContext())
+            .setTitle(getString(R.string.booking_validation_error_title))
+            .setMessage(message)
+            .setPositiveButton(getString(R.string.ok), null)
+            .show();
     }
 }

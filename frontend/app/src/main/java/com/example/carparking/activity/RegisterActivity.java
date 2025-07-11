@@ -13,6 +13,7 @@ import com.example.carparking.api.ApiClient;
 import com.example.carparking.api.AuthApiService;
 import com.example.carparking.model.ResponseWrapper;
 import com.example.carparking.model.User;
+import com.example.carparking.util.ErrorUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,20 +65,27 @@ public class RegisterActivity extends AppCompatActivity {
             user.phone = phone;
             user.password = password;
             user.confirmPassword = confirmPassword;
+            btnRegister.setEnabled(false);
+            btnRegister.setText("Đang đăng ký...");
 
             api.register(user).enqueue(new Callback<ResponseWrapper<Void>>() {
                 @Override
                 public void onResponse(Call<ResponseWrapper<Void>> call, Response<ResponseWrapper<Void>> response) {
-                    if (response.isSuccessful() && response.body().success) {
+                    if (response.isSuccessful() && response.body() != null) {
                         Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Toast.makeText(RegisterActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, ErrorUtils.getErrorFromApi(response.errorBody()), Toast.LENGTH_SHORT).show();
                     }
+
+                    btnRegister.setEnabled(true);
+                    btnRegister.setText("Đăng ký");
                 }
 
                 @Override
                 public void onFailure(Call<ResponseWrapper<Void>> call, Throwable t) {
+                    btnRegister.setEnabled(true);
+                    btnRegister.setText("Đăng ký");
                     Toast.makeText(RegisterActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });

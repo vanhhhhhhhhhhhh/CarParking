@@ -3,6 +3,8 @@ package com.example.carparking.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBar;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentContainerView;
 
 import com.example.carparking.R;
 import com.example.carparking.api.ApiClient;
@@ -44,6 +47,9 @@ public class BookingActivity extends AppCompatActivity implements BookingFragmen
     private BookingApiService bookingApiService;
     private ParkingApiService parkingApiService;
     private String parkingId;
+    private ProgressBar circularProgressBar;
+    private FragmentContainerView bookingFragmentContainerView;
+    int loadedCount = 0;
 
 
     @Override
@@ -71,6 +77,10 @@ public class BookingActivity extends AppCompatActivity implements BookingFragmen
         bookingFragment = new BookingFragment();
         bookingFragment.setBookingListener(this);
         bookingFragment.setAllowBooking(false);
+
+        circularProgressBar = findViewById(R.id.progressBar);
+
+        bookingFragmentContainerView  = findViewById(R.id.bookingFragmentContainerView);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -115,6 +125,8 @@ public class BookingActivity extends AppCompatActivity implements BookingFragmen
                         bookingFragment.setParkingImage(parking.getImageUrl());
                         bookingFragment.setAllowBooking(hasAvailableSpots);
 
+                        showEverything();
+
                         Log.d("BookingActivity", "Parking data loaded successfully: " + parking.getName());
                     } else {
                         Log.e("BookingActivity", "Parking data is null.");
@@ -131,6 +143,14 @@ public class BookingActivity extends AppCompatActivity implements BookingFragmen
         });
     }
 
+    private void showEverything() {
+        if (++loadedCount < 2) {
+            return;
+        }
+        circularProgressBar.setVisibility(View.GONE);
+        bookingFragmentContainerView.setVisibility(View.VISIBLE);
+    }
+
     private void loadLicensePlates() {
         licensePlateApiService.getLicensePlates().enqueue(new Callback<ResponseWrapper<List<LicensePlate>>>() {
             @Override
@@ -139,6 +159,7 @@ public class BookingActivity extends AppCompatActivity implements BookingFragmen
                     List<LicensePlate> licensePlateList = response.body().data;
                     if (licensePlateList != null && bookingFragment != null) {
                         bookingFragment.setLicensePlates(licensePlateList);
+                        showEverything();
                     }
                 } else {
                     Log.e("BookingActivity", "Failed to load license plates: " + response.message());

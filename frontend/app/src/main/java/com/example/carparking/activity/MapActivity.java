@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -55,7 +56,8 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
     private RecyclerView nearbyRecyclerView;
     private SearchResultAdapter nearbyPlacesAdapter;
     private BottomSheetBehavior<FrameLayout> nearbyBottomSheetBehavior;
-
+    private ProgressBar circularProgressBar;
+    private FrameLayout mapsContentContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,9 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(R.string.parking_title);
         }
+
+        circularProgressBar = findViewById(R.id.progressBar);
+        mapsContentContainer = findViewById(R.id.mapsContentContainer);
 
         setupBottomSheet();
         setupSearchFragment();
@@ -149,6 +154,7 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
                     } else {
                         Log.d(TAG, "No parking results found");
                     }
+                    showEverything();
                 } else {
                     Log.e(TAG, "Failed to fetch parking results: " + response.message());
                 }
@@ -159,6 +165,11 @@ public class MapActivity extends AppCompatActivity implements SearchFragment.Sea
                 Toast.makeText(MapActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showEverything() {
+        circularProgressBar.setVisibility(View.GONE);
+        mapsContentContainer.setVisibility(View.VISIBLE);
     }
 
     private void setUpMapFragment() {
