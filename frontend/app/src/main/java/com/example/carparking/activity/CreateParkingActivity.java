@@ -19,6 +19,11 @@ import com.example.carparking.api.ApiClient;
 import com.example.carparking.api.ParkingApiService;
 import com.example.carparking.util.InputStreamRequestBody;
 import com.example.carparking.util.SharedPrefManager;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.InputStream;
 
@@ -54,13 +59,42 @@ public class CreateParkingActivity extends AppCompatActivity {
         etPricePerHour = findViewById(R.id.etPricePerHour);
         etOpenTime = findViewById(R.id.etOpenTime);
         etCloseTime = findViewById(R.id.etCloseTime);
-
         btnSelectImage = findViewById(R.id.btnSelectImage);
         btnSubmit = findViewById(R.id.btnSubmit);
         imgPreview = findViewById(R.id.imgPreview);
 
         btnSelectImage.setOnClickListener(view -> openImagePicker());
         btnSubmit.setOnClickListener(view -> submitCreateParking());
+
+        setupMap();
+    }
+
+    private void setupMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.mapContainer);
+
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.mapContainer, mapFragment)
+                    .commit();
+        }
+
+        mapFragment.getMapAsync(googleMap -> {
+            googleMap.getUiSettings().setZoomControlsEnabled(true);
+
+            googleMap.setOnMapClickListener(latLng -> {
+                double lat = latLng.latitude;
+                double lng = latLng.longitude;
+
+                etLatitude.setText(String.valueOf(lat));
+                etLongitude.setText(String.valueOf(lng));
+
+                googleMap.clear();
+                googleMap.addMarker(new MarkerOptions().position(latLng).title("Vị trí đã chọn"));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+            });
+        });
     }
 
     private void openImagePicker() {

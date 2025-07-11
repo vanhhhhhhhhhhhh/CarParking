@@ -51,6 +51,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+        <FrameLayout
+            android:id="@+id/mapContainer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp" />
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -64,10 +70,10 @@
                 android:inputType="numberDecimal"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/bg_edittext"
-                android:padding="12dp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edittext"
+                android:padding="12dp" />
 
             <EditText
                 android:id="@+id/etLongitude"
@@ -75,10 +81,10 @@
                 android:inputType="numberDecimal"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:background="@drawable/bg_edittext"
-                android:padding="12dp"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edittext"
+                android:padding="12dp" />
         </LinearLayout>
 
         <EditText
