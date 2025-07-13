@@ -266,7 +266,12 @@ const bookingController = {
                 $inc: { availableSlots: 1 }
             })
 
-            return res.status(200).json({ message: 'Hủy đặt chỗ thành công' })
+            return res.status(200).json({
+                success: true,
+                message: 'Hủy đặt chỗ thành công',
+                data: booking
+            });
+
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Lỗi server' })
@@ -295,7 +300,12 @@ const bookingController = {
 
             await Parking.findByIdAndUpdate(booking.parkingId, { $inc: { availableSlots: -1 } })
 
-            return res.status(200).json({ message: 'Xác nhận đặt chỗ thành công' })
+            return res.status(200).json({
+                success: true,
+                message: 'Xác nhận đặt chỗ thành công',
+                data: booking
+            });
+
         } catch (error) {
             return res.status(500).json(error.message)
         }

@@ -1,5 +1,6 @@
 package com.example.carparking.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,12 +14,16 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.carparking.R;
 import com.example.carparking.api.ApiClient;
 import com.example.carparking.api.ParkingApiService;
 import com.example.carparking.util.InputStreamRequestBody;
 import com.example.carparking.util.SharedPrefManager;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -38,7 +43,11 @@ import retrofit2.Response;
 public class CreateParkingActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int REQUEST_LOCATION_PERMISSION = 1001;
+
     private Uri selectedImageUri = null;
+    private GoogleMap googleMap;
+    private FusedLocationProviderClient fusedLocationClient;
 
     private EditText etName, etAddress, etLatitude, etLongitude, etTotalSlots,
             etAvailableSlots, etPricePerHour, etOpenTime, etCloseTime;
@@ -63,6 +72,8 @@ public class CreateParkingActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
         imgPreview = findViewById(R.id.imgPreview);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         btnSelectImage.setOnClickListener(view -> openImagePicker());
         btnSubmit.setOnClickListener(view -> submitCreateParking());
 
@@ -80,8 +91,18 @@ public class CreateParkingActivity extends AppCompatActivity {
                     .commit();
         }
 
-        mapFragment.getMapAsync(googleMap -> {
+        mapFragment.getMapAsync(map -> {
+            googleMap = map;
             googleMap.getUiSettings().setZoomControlsEnabled(true);
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                    android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION_PERMISSION);
+            } else {
+                showCurrentLocation();
+            }
 
             googleMap.setOnMapClickListener(latLng -> {
                 double lat = latLng.latitude;
@@ -95,6 +116,27 @@ public class CreateParkingActivity extends AppCompatActivity {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
             });
         });
+    }
+
+    @SuppressLint("MissingPermission")
+    private void showCurrentLocation() {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location != null && googleMap != null) {
+                        double lat = location.getLatitude();
+                        double lng = location.getLongitude();
+                        LatLng currentLatLng = new LatLng(lat, lng);
+
+                        etLatitude.setText(String.valueOf(lat));
+                        etLongitude.setText(String.valueOf(lng));
+
+                        googleMap.clear();
+                        googleMap.addMarker(new MarkerOptions().position(currentLatLng).title("Vị trí hiện tại"));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16));
+                    } else {
+                        Toast.makeText(this, "Không thể lấy vị trí hiện tại", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void openImagePicker() {

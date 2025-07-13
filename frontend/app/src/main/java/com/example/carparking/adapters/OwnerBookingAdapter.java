@@ -47,6 +47,7 @@ public class OwnerBookingAdapter extends RecyclerView.Adapter<OwnerBookingAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         BookingListing b = bookings.get(position);
+
         holder.tvUserName.setText("Người dùng: " + b.getUserName());
         holder.tvParkingName.setText("Bãi đỗ: " + b.getParkingName());
         holder.tvVehicleNumber.setText("Biển số xe: " + b.getVehicleNumber());
@@ -55,50 +56,52 @@ public class OwnerBookingAdapter extends RecyclerView.Adapter<OwnerBookingAdapte
         holder.tvBookingStatus.setText("Trạng thái: " + b.getStatusText());
 
         boolean isPending = b.getStatus() == BookingStatus.PENDING;
-        if (isPending) {
-            holder.btnConfirm.setVisibility(View.VISIBLE);
-            holder.btnCancel.setVisibility(View.VISIBLE);
-        } else {
-            holder.btnConfirm.setVisibility(View.GONE);
-            holder.btnCancel.setVisibility(View.GONE);
-        }
+        holder.btnConfirm.setVisibility(isPending ? View.VISIBLE : View.GONE);
+        holder.btnCancel.setVisibility(isPending ? View.VISIBLE : View.GONE);
 
-        holder.btnConfirm.setOnClickListener(v -> {
-            api.confirmBooking(b.getId()).enqueue(new Callback<ResponseWrapper<Object>>() {
-                @Override
-                public void onResponse(Call<ResponseWrapper<Object>> call, Response<ResponseWrapper<Object>> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        b.setStatus(BookingStatus.CONFIRMED);
-                        notifyItemChanged(holder.getAdapterPosition());
-                        Toast.makeText(context, "Đã xác nhận đơn", Toast.LENGTH_SHORT).show();
-                    }
-                }
+        holder.btnConfirm.setOnClickListener(v -> confirmBooking(b.getId()));
+        holder.btnCancel.setOnClickListener(v -> cancelBooking(b.getId()));
+    }
 
-                @Override
-                public void onFailure(Call<ResponseWrapper<Object>> call, Throwable t) {
-                    Toast.makeText(context, "Lỗi xác nhận: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+    private void confirmBooking(String bookingId) {
+        api.confirmBooking(bookingId).enqueue(new Callback<ResponseWrapper<Object>>() {
+            @Override
+            public void onResponse(Call<ResponseWrapper<Object>> call, Response<ResponseWrapper<Object>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Toast.makeText(context, "Xác nhận thành công", Toast.LENGTH_SHORT).show();
+                    reloadCallback.run(); // reload danh sách mới từ server
+                } else {
+                    Toast.makeText(context, "Không thể xác nhận đơn", Toast.LENGTH_SHORT).show();
                 }
-            });
-        });
+            }
 
-        holder.btnCancel.setOnClickListener(v -> {
-            api.cancelBooking(b.getId()).enqueue(new Callback<ResponseWrapper<Object>>() {
-                @Override
-                public void onResponse(Call<ResponseWrapper<Object>> call, Response<ResponseWrapper<Object>> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
-                        b.setStatus(BookingStatus.CANCELLED);
-                        notifyItemChanged(holder.getAdapterPosition());
-                        Toast.makeText(context, "Đã hủy đơn", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseWrapper<Object>> call, Throwable t) {
-                    Toast.makeText(context, "Lỗi hủy đơn: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            @Override
+            public void onFailure(Call<ResponseWrapper<Object>> call, Throwable t) {
+                Toast.makeText(context, "Lỗi xác nhận: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
+
+    private void cancelBooking(String bookingId) {
+        api.cancelBooking(bookingId).enqueue(new Callback<ResponseWrapper<Object>>() {
+            @Override
+            public void onResponse(Call<ResponseWrapper<Object>> call, Response<ResponseWrapper<Object>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                    Toast.makeText(context, "Đã hủy đơn", Toast.LENGTH_SHORT).show();
+                    reloadCallback.run(); // reload danh sách mới từ server
+                } else {
+                    Toast.makeText(context, "Không thể hủy đơn", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseWrapper<Object>> call, Throwable t) {
+                Toast.makeText(context, "Lỗi hủy đơn: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 
     @Override
     public int getItemCount() {
