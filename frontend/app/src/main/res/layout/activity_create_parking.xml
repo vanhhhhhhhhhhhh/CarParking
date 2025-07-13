@@ -15,17 +15,8 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="24dp">
 
-    <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:title="Đăng ký trở thành chủ bãi"
-            android:titleTextColor="@android:color/white"
-            android:navigationIcon="@drawable/ic_back" />
-
         <TextView
-            android:text="Tạo bãi đỗ xe mới"
+            android:text="Đăng ký trở thành chủ bãi"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#1E88E5"
