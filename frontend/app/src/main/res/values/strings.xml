@@ -84,7 +84,7 @@
     <string name="cancel">Hủy</string>
     <string name="add">Thêm</string>
 
-    <string name="google_maps_key">AIzaSyABN_OqsglqzFk-Ci-cI-WtaUwE7apWD4g</string>
+    <string name="google_maps_key">AIzaSyBxgjzlwCRUBH4iSsl7_Kv-NuK66LMXGFA</string>
     <string name="parking_available">Còn %d chỗ</string>
     <string name="parking_full">Đã đầy chỗ</string>
     <string name="error_creating_license_plate">Đã có lỗi khi tạo biển số</string>
